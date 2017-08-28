@@ -127,19 +127,17 @@ abstract class BulkOperator
             $this->buffer[] = $value;
         }
 
-        $this->bufferSize++;
-
-        if ($this->bufferSize === $this->operationsPerQuery) {
-            $this->preparedStatement->execute($this->buffer);
-            $this->rowCount += $this->preparedStatement->rowCount();
-
-            $this->buffer = [];
-            $this->bufferSize = 0;
-
-            return true;
+        if (++$this->bufferSize !== $this->operationsPerQuery) {
+            return false;
         }
 
-        return false;
+        $this->preparedStatement->execute($this->buffer);
+        $this->rowCount += $this->preparedStatement->rowCount();
+
+        $this->buffer = [];
+        $this->bufferSize = 0;
+
+        return true;
     }
 
     /**
@@ -155,15 +153,17 @@ abstract class BulkOperator
      */
     public function flush() : void
     {
-        if ($this->bufferSize !== 0) {
-            $query = $this->getQuery($this->bufferSize);
-            $statement = $this->pdo->prepare($query);
-            $statement->execute($this->buffer);
-            $this->rowCount += $statement->rowCount();
-
-            $this->buffer = [];
-            $this->bufferSize = 0;
+        if ($this->bufferSize === 0) {
+            return;
         }
+
+        $query = $this->getQuery($this->bufferSize);
+        $statement = $this->pdo->prepare($query);
+        $statement->execute($this->buffer);
+        $this->rowCount += $statement->rowCount();
+
+        $this->buffer = [];
+        $this->bufferSize = 0;
     }
 
     /**
