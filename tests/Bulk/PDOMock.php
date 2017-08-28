@@ -18,10 +18,19 @@ class PDOMock extends \PDO
     private $log = [];
 
     /**
-     * Empty constructor.
+     * The values that will be returned by successive calls to DOStatementMock::rowCount().
+     *
+     * @var int[]
      */
-    public function __construct()
+    private $rowCounts;
+
+    /**
+     * @param array $rowCounts The values that will be returned by successive calls to PDOStatementMock::rowCount().
+     *                         If no values are provided, PDOStatementMock::rowCount() will return 0.
+     */
+    public function __construct(array $rowCounts = [])
     {
+        $this->rowCounts = $rowCounts;
     }
 
     /**
@@ -55,5 +64,17 @@ class PDOMock extends \PDO
     public function getLog() : array
     {
         return $this->log;
+    }
+
+    /**
+     * Returns the value that will be returned by PDOStatementMock::rowCount().
+     *
+     * @return int
+     */
+    public function getRowCount() : int
+    {
+        $rowCount = array_shift($this->rowCounts);
+
+        return $rowCount ?? 0;
     }
 }

@@ -11,9 +11,29 @@ use PHPUnit\Framework\TestCase;
  */
 class BulkInserterTest extends TestCase
 {
-    public function testBulkInserter()
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testValidateConstructorBatchSize()
     {
         $pdo = new PDOMock();
+        new BulkInserter($pdo, 'table', ['id'], 0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testValidateQueueColumnCount()
+    {
+        $pdo = new PDOMock();
+        $inserter = new BulkInserter($pdo, 'table', ['id', 'name']);
+        $inserter->queue(1);
+    }
+
+    public function testBulkInsert()
+    {
+        $pdo = new PDOMock([3, 3, 1]);
+
         $inserter = new BulkInserter($pdo, 'transactions', ['user', 'currency', 'amount'], 3);
 
         $inserter->queue(1, 'EUR', '1.23');
@@ -24,7 +44,11 @@ class BulkInserterTest extends TestCase
         $inserter->queue(6, 'USD', '6.78');
         $inserter->queue(7, 'USD', '7.89');
 
+        $this->assertSame(6, $inserter->getRowCount());
+
         $inserter->flush();
+
+        $this->assertSame(7, $inserter->getRowCount());
 
         $expectedLog = [
             "PREPARE STATEMENT 1: INSERT INTO transactions (user, currency, amount) VALUES (?, ?, ?), (?, ?, ?), (?, ?, ?)",

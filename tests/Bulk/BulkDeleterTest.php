@@ -13,7 +13,7 @@ class BulkDeleterTest extends TestCase
 {
     public function testBulkDeleter()
     {
-        $pdo = new PDOMock();
+        $pdo = new PDOMock([3, 4, 2]);
         $deleter = new BulkDeleter($pdo, 'transactions', ['store_id', 'transaction_number'], 3);
 
         $deleter->queue(1, 1);
@@ -24,7 +24,11 @@ class BulkDeleterTest extends TestCase
         $deleter->queue(3, 101);
         $deleter->queue(4, 1000);
 
+        $this->assertSame(7, $deleter->getRowCount());
+
         $deleter->flush();
+
+        $this->assertSame(9, $deleter->getRowCount());
 
         $expectedLog = [
             "PREPARE STATEMENT 1: DELETE FROM transactions WHERE (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?)",

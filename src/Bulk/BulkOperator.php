@@ -80,16 +80,16 @@ abstract class BulkOperator
      */
     public function __construct(\PDO $pdo, string $table, array $fields, int $operationsPerQuery = 100)
     {
+        if ($operationsPerQuery < 1) {
+            throw new \InvalidArgumentException('The number of operations per query must be 1 or more.');
+        }
+
         $this->pdo       = $pdo;
         $this->table     = $table;
         $this->fields    = $fields;
         $this->numFields = count($fields);
 
         $this->operationsPerQuery = $operationsPerQuery;
-
-        if ($operationsPerQuery < 1) {
-            throw new \InvalidArgumentException('The number of operations per query must be 1 or more.');
-        }
 
         $query = $this->getQuery($operationsPerQuery);
         $this->preparedStatement = $this->pdo->prepare($query);

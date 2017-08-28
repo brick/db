@@ -23,7 +23,7 @@ class PDOStatementMock extends \PDOStatement
      */
     public function __construct(PDOMock $pdo, int $number)
     {
-        $this->pdo = $pdo;
+        $this->pdo    = $pdo;
         $this->number = $number;
     }
 
@@ -37,6 +37,14 @@ class PDOStatementMock extends \PDOStatement
         $this->pdo->log('EXECUTE STATEMENT ' . $this->number . ': (' . $this->dump($parameters) . ')');
 
         return true;
+    }
+
+    /**
+     * @return int
+     */
+    public function rowCount()
+    {
+        return $this->pdo->getRowCount();
     }
 
     /**
