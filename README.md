@@ -60,7 +60,7 @@ To use it, create a `BulkInserter` instance with:
 use Brick\Db\Bulk\BulkInserter;
 
 $pdo = new PDO(...);
-$inserter = new BulkInserter($pdo, 'mytable', ['id', 'name', 'age']);
+$inserter = new BulkInserter($pdo, 'user', ['id', 'name', 'age']);
 
 $inserter->queue(1, 'Bob', 20);
 $inserter->queue(2, 'John', 22);
