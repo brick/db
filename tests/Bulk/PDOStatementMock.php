@@ -34,7 +34,7 @@ class PDOStatementMock extends \PDOStatement
      */
     public function execute($parameters = null)
     {
-        $this->pdo->log('EXECUTE STATEMENT ' . $this->number . ' (' . $this->dump($parameters) . ')');
+        $this->pdo->log('EXECUTE STATEMENT ' . $this->number . ': (' . $this->dump($parameters) . ')');
 
         return true;
     }

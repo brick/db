@@ -32,9 +32,11 @@ class PDOMock extends \PDO
      */
     public function prepare($statement, $options = null)
     {
-        $this->log('PREPARE ' . $statement);
+        $statementNumber = ++$this->statementNumber;
 
-        return new PDOStatementMock($this, ++$this->statementNumber);
+        $this->log('PREPARE STATEMENT ' . $statementNumber . ': ' . $statement);
+
+        return new PDOStatementMock($this, $statementNumber);
     }
 
     /**

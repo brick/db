@@ -18,16 +18,20 @@ class BulkDeleterTest extends TestCase
 
         $deleter->queue(1, 1);
         $deleter->queue(1, 2);
-        $deleter->queue(2, 100);
-        $deleter->queue(2, 101);
+        $deleter->queue(2, 10);
+        $deleter->queue(2, 11);
+        $deleter->queue(3, 100);
+        $deleter->queue(3, 101);
+        $deleter->queue(4, 1000);
 
         $deleter->flush();
 
         $expectedLog = [
-            "PREPARE DELETE FROM transactions WHERE (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?)",
-            "EXECUTE STATEMENT 1 (1, 1, 1, 2, 2, 100)",
-            "PREPARE DELETE FROM transactions WHERE (store_id = ? AND transaction_number = ?)",
-            "EXECUTE STATEMENT 2 (2, 101)"
+            "PREPARE STATEMENT 1: DELETE FROM transactions WHERE (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?)",
+            "EXECUTE STATEMENT 1: (1, 1, 1, 2, 2, 10)",
+            "EXECUTE STATEMENT 1: (2, 11, 3, 100, 3, 101)",
+            "PREPARE STATEMENT 2: DELETE FROM transactions WHERE (store_id = ? AND transaction_number = ?)",
+            "EXECUTE STATEMENT 2: (4, 1000)"
         ];
 
         $this->assertSame($expectedLog, $pdo->getLog());
