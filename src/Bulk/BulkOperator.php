@@ -105,7 +105,7 @@ abstract class BulkOperator
      *
      * @throws \InvalidArgumentException If the number of values does not match the field count.
      */
-    public function queue(...$values)
+    public function queue(...$values) : bool
     {
         $count = count($values);
 
@@ -148,7 +148,7 @@ abstract class BulkOperator
      *
      * @return void
      */
-    public function flush()
+    public function flush() : void
     {
         if ($this->bufferSize !== 0) {
             $query = $this->getQuery($this->bufferSize);
