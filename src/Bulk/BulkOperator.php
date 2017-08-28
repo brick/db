@@ -15,14 +15,14 @@ abstract class BulkOperator
     private $pdo;
 
     /**
-     * The name of the table to insert into.
+     * The name of the target database table.
      *
      * @var string
      */
     protected $table;
 
     /**
-     * The name of the fields to insert.
+     * The name of the fields to process.
      *
      * @var array
      */
@@ -143,11 +143,10 @@ abstract class BulkOperator
     }
 
     /**
-     * Flushes the pending data to the database and commits the current transaction.
+     * Flushes the pending data to the database.
      *
      * This is to be called once after the last queue() has been processed,
-     * to force flushing the remaining queued operations to the database table,
-     * and commit the current transaction, if any.
+     * to force flushing the remaining queued operations to the database table.
      *
      * Do *not* forget to call this method after all the operations have been queued,
      * or it could result in data loss.
