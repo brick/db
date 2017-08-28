@@ -1,0 +1,21 @@
+language: php
+sudo: false
+dist: trusty
+
+php:
+  - 7.1
+  - hhvm
+
+matrix:
+  allow_failures:
+    - php: hhvm
+
+before_script:
+  - composer install
+
+script:
+  - mkdir -p build/logs
+  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
+
+after_script:
+  - vendor/bin/coveralls -v
