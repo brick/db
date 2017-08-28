@@ -84,10 +84,16 @@ abstract class BulkOperator
             throw new \InvalidArgumentException('The number of operations per query must be 1 or more.');
         }
 
+        $numFields = count($fields);
+
+        if ($numFields === 0) {
+            throw new \InvalidArgumentException('The field list is empty.');
+        }
+
         $this->pdo       = $pdo;
         $this->table     = $table;
         $this->fields    = $fields;
-        $this->numFields = count($fields);
+        $this->numFields = $numFields;
 
         $this->operationsPerQuery = $operationsPerQuery;
 

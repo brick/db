@@ -13,6 +13,7 @@ class BulkInserterTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The number of operations per query must be 1 or more.
      */
     public function testValidateConstructorBatchSize()
     {
@@ -22,8 +23,18 @@ class BulkInserterTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The field list is empty.
      */
-    public function testValidateQueueColumnCount()
+    public function testValidateConstructorFieldCount()
+    {
+        $pdo = new PDOMock();
+        new BulkInserter($pdo, 'table', []);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testValidateQueueFieldCount()
     {
         $pdo = new PDOMock();
         $inserter = new BulkInserter($pdo, 'table', ['id', 'name']);
