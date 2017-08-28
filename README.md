@@ -1,0 +1,146 @@
+Brick\Db
+========
+
+A collection of helper tools for interacting with databases.
+
+[![Build Status](https://secure.travis-ci.org/brick/db.svg?branch=master)](http://travis-ci.org/brick/db)
+[![Coverage Status](https://coveralls.io/repos/brick/db/badge.svg?branch=master)](https://coveralls.io/r/brick/db)
+
+Installation
+------------
+
+This library is installable via [Composer](https://getcomposer.org/).
+Just define the following requirement in your `composer.json` file:
+
+    {
+        "require": {
+            "brick/db": "dev-master"
+        }
+    }
+
+Requirements
+------------
+
+This library requires PHP 7.1 or later.
+
+Package overview
+----------------
+
+This package contains two helpers: `BulkInserter` and `BulkDeleter`. These classes, built on top of `PDO`, allow you to speed up database
+rows insertion & deletion by performing multiple operations per query, with a clean OO API.
+
+### BulkInserter
+
+This class takes advantage of the extended insert / multirow syntax available in MySQL, PostgreSQL and SQLite.
+
+It basically replaces the need to send a batch of queries:
+
+```sql
+INSERT INTO user (id, name, age) VALUES (1, 'Bob', 20);
+INSERT INTO user (id, name, age) VALUES (2, 'John', 22);
+INSERT INTO user (id, name, age) VALUES (3, 'Alice', 24);
+```
+
+with a single, faster query:
+
+```sql
+INSERT INTO user (id, name age) VALUES (1, 'Bob', 20), (2, 'John', 22), (3, 'Alice', 24);
+```
+
+To use it, create a `BulkInserter` instance with:
+
+- your `PDO` connection object
+- the name of your table
+- the name of the columns to insert
+- the number of inserts to perform per query (optional, defaults to 1000)
+
+#### Example
+
+```php
+use Brick\Db\Bulk\BulkInserter;
+
+$pdo = new PDO(...);
+$inserter = new BulkInserter($pdo, 'mytable', ['id', 'name', 'age']);
+
+$inserter->queue(1, 'Bob', 20);
+$inserter->queue(2, 'John', 22);
+$inserter->queue(3, 'Alice', 24);
+
+$inserter->flush();
+```
+
+The `queue()` method does not do anything until either `flush()` is called, or the number of inserts per query is reached.
+
+*Note: `queue()` returns `false` when the insert has been queued only, and `true` when the number of inserts per query has been reached and the batch has therefore been flushed to the database. This can be useful to monitor the progress of the batch.*
+
+**Do not forget to call `flush()` after all your inserts have been queued. Failure to do so would result in records not being inserted.**
+
+
+### BulkDeleter
+
+This class allows you to delete multiple records at a time.
+
+It basically replaces the need for these queries:
+
+```sql
+DELETE FROM user WHERE id = 1;
+DELETE FROM user WHERE id = 2;
+DELETE FROM user WHERE id = 3;
+```
+
+with a single, faster query:
+
+```sql
+DELETE FROM user WHERE (id = 1) OR (id = 2) OR (id = 3);
+```
+
+The constructor parameters are the same as `BulkInserter`.
+
+For obvious performance reasons, the list of columns used to identify a record should match the primary key or a unique index of the table.
+
+
+#### Example
+
+With a single column primary key / unique index:
+
+```php
+use Brick\Db\Bulk\BulkDeleter;
+
+$pdo = new PDO(...);
+$deleter = new BulkDeleter($pdo, 'user', ['id']);
+
+$deleter->queue(1);
+$deleter->queue(2);
+$deleter->queue(3);
+
+$deleter->flush();
+```
+
+With a composite key:
+
+```php
+use Brick\Db\Bulk\BulkDeleter;
+
+$pdo = new PDO(...);
+$deleter = new BulkDeleter($pdo, 'user_product', ['user_id', 'product_id]);
+
+$deleter->queue(1, 123);
+$deleter->queue(2, 456);
+$deleter->queue(3, 789);
+
+$deleter->flush();
+```
+
+**Do not forget to call `flush()` after all your deletes have been queued. Failure to do so would result in records not being deleted.**
+
+### Performance considerations
+
+It is advised to wrap your inserts in a transaction to further speed up the batch.
+
+Be careful when raising the number of records per query, as you might hit two limits:
+
+- PHP's [memory_limit](http://php.net/manual/en/ini.core.php#ini.memory-limit)
+- MySQL's [max_allowed_packet](https://dev.mysql.com/doc/refman/5.7/en/packet-too-large.html)
+
+You can tweak these settings if you have access to your server's configuration, however it's important to benchmark with different batch sizes, to determine the optimal size and see if increasing the server limits is worth the effort.
+When PHP and MySQL are located on the same machine, just 100 inserts per query is usually enough to reach the maximum insert speed.
