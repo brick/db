@@ -24,11 +24,11 @@ class BulkDeleterTest extends TestCase
         $deleter->queue(3, 101);
         $deleter->queue(4, 1000);
 
-        $this->assertSame(7, $deleter->getRowCount());
+        $this->assertSame(7, $deleter->getAffectedRows());
 
         $deleter->flush();
 
-        $this->assertSame(9, $deleter->getRowCount());
+        $this->assertSame(9, $deleter->getAffectedRows());
 
         $expectedLog = [
             "PREPARE STATEMENT 1: DELETE FROM transaction WHERE (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?)",

@@ -57,7 +57,7 @@ abstract class BulkOperator
     private $buffer = [];
 
     /**
-     * The number of records in the buffer.
+     * The number of operations in the buffer.
      *
      * @var int
      */
@@ -186,7 +186,7 @@ abstract class BulkOperator
      *
      * @return int
      */
-    public function getBufferSize() : int
+    public function getPendingOperations() : int
     {
         return $this->bufferSize;
     }
@@ -196,7 +196,7 @@ abstract class BulkOperator
      *
      * @return int
      */
-    public function getRowCount() : int
+    public function getAffectedRows() : int
     {
         return $this->rowCount;
     }

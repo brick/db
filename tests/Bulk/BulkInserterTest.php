@@ -47,8 +47,8 @@ class BulkInserterTest extends TestCase
 
         $inserter = new BulkInserter($pdo, 'transaction', ['user', 'currency', 'amount'], 3);
 
-        $this->assertSame(0, $inserter->getBufferSize());
-        $this->assertSame(0, $inserter->getRowCount());
+        $this->assertSame(0, $inserter->getPendingOperations());
+        $this->assertSame(0, $inserter->getAffectedRows());
 
         $data = [
             [[1, 'EUR', '1.23'], false, 0],
@@ -72,14 +72,14 @@ class BulkInserterTest extends TestCase
             }
 
             $this->assertSame($result, $isFlush);
-            $this->assertSame($bufferSize, $inserter->getBufferSize());
-            $this->assertSame($rowCount, $inserter->getRowCount());
+            $this->assertSame($bufferSize, $inserter->getPendingOperations());
+            $this->assertSame($rowCount, $inserter->getAffectedRows());
         }
 
         $inserter->flush();
 
-        $this->assertSame(0, $inserter->getBufferSize());
-        $this->assertSame(7, $inserter->getRowCount());
+        $this->assertSame(0, $inserter->getPendingOperations());
+        $this->assertSame(7, $inserter->getAffectedRows());
 
         $expectedLog = [
             "PREPARE STATEMENT 1: INSERT INTO transaction (user, currency, amount) VALUES (?, ?, ?), (?, ?, ?), (?, ?, ?)",
@@ -101,12 +101,12 @@ class BulkInserterTest extends TestCase
         $inserter->queue(2, 'John');
         $inserter->queue(3, 'Alice');
 
-        $this->assertSame(1, $inserter->getBufferSize());
-        $this->assertSame(2, $inserter->getRowCount());
+        $this->assertSame(1, $inserter->getPendingOperations());
+        $this->assertSame(2, $inserter->getAffectedRows());
 
         $inserter->reset();
 
-        $this->assertSame(0, $inserter->getBufferSize());
-        $this->assertSame(0, $inserter->getRowCount());
+        $this->assertSame(0, $inserter->getPendingOperations());
+        $this->assertSame(0, $inserter->getAffectedRows());
     }
 }
