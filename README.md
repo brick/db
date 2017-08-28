@@ -52,7 +52,7 @@ To use it, create a `BulkInserter` instance with:
 - your `PDO` connection object
 - the name of your table
 - the name of the columns to insert
-- the number of inserts to perform per query (optional, defaults to 1000)
+- the number of inserts to perform per query (optional, defaults to 100)
 
 #### Example
 

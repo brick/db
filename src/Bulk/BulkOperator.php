@@ -78,7 +78,7 @@ abstract class BulkOperator
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(\PDO $pdo, string $table, array $fields, int $operationsPerQuery = 1000)
+    public function __construct(\PDO $pdo, string $table, array $fields, int $operationsPerQuery = 100)
     {
         $this->pdo       = $pdo;
         $this->table     = $table;
