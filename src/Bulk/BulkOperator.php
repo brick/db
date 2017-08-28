@@ -168,6 +168,30 @@ abstract class BulkOperator
     }
 
     /**
+     * Resets the bulk operator.
+     *
+     * This removes any pending operations, and resets the affected row count.
+     *
+     * @return void
+     */
+    public function reset() : void
+    {
+        $this->buffer     = [];
+        $this->bufferSize = 0;
+        $this->rowCount   = 0;
+    }
+
+    /**
+     * Returns the number of pending operations in the buffer.
+     *
+     * @return int
+     */
+    public function getBufferSize() : int
+    {
+        return $this->bufferSize;
+    }
+
+    /**
      * Returns the total number of affected rows.
      *
      * @return int

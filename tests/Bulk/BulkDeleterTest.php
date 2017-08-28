@@ -11,10 +11,10 @@ use PHPUnit\Framework\TestCase;
  */
 class BulkDeleterTest extends TestCase
 {
-    public function testBulkDeleter()
+    public function testBulkDelete()
     {
         $pdo = new PDOMock([3, 4, 2]);
-        $deleter = new BulkDeleter($pdo, 'transactions', ['store_id', 'transaction_number'], 3);
+        $deleter = new BulkDeleter($pdo, 'transaction', ['store_id', 'transaction_number'], 3);
 
         $deleter->queue(1, 1);
         $deleter->queue(1, 2);
@@ -31,10 +31,10 @@ class BulkDeleterTest extends TestCase
         $this->assertSame(9, $deleter->getRowCount());
 
         $expectedLog = [
-            "PREPARE STATEMENT 1: DELETE FROM transactions WHERE (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?)",
+            "PREPARE STATEMENT 1: DELETE FROM transaction WHERE (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?) OR (store_id = ? AND transaction_number = ?)",
             "EXECUTE STATEMENT 1: (1, 1, 1, 2, 2, 10)",
             "EXECUTE STATEMENT 1: (2, 11, 3, 100, 3, 101)",
-            "PREPARE STATEMENT 2: DELETE FROM transactions WHERE (store_id = ? AND transaction_number = ?)",
+            "PREPARE STATEMENT 2: DELETE FROM transaction WHERE (store_id = ? AND transaction_number = ?)",
             "EXECUTE STATEMENT 2: (4, 1000)"
         ];
 
