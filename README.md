@@ -133,11 +133,38 @@ $deleter->flush();
 
 **Do not forget to call `flush()` after all your deletes have been queued. Failure to do so would result in records not being deleted.**
 
-### Performance considerations
+### Performance tips
 
-It is advised to wrap your inserts in a transaction to further speed up the batch.
+To get the maximum performance out of this library, you should:
 
-Be careful when raising the number of records per query, as you might hit two limits:
+- wrap your operations in a transaction
+- disable emulation of prepared statements (`PDO::ATTR_EMULATE_PREPARES=false`)
+
+These two tips combined can get you **up to 50% more throughput** in terms of inserts per second. Sample code:
+
+```php
+$pdo = new PDO(...);
+$pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
+$inserter = new BulkInserter($pdo, 'user', ['id', 'name', 'age']);
+$pdo->beginTransaction();
+
+$inserter->queue(...);
+// more queue() calls...
+
+$inserter->flush();
+$pdo->commit();
+
+```
+
+The library could do this automatically, but doesn't for the following reasons:
+
+- your PDO object's configuration should not be modified by a third-party library
+- you should have full control over your transactions, when to start them and when to commit them
+
+### Respecting the limits
+
+Be careful when raising the number of operations per query, as you might hit two limits:
 
 - PHP's [memory_limit](http://php.net/manual/en/ini.core.php#ini.memory-limit)
 - MySQL's [max_allowed_packet](https://dev.mysql.com/doc/refman/5.7/en/packet-too-large.html)
