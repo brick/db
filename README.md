@@ -168,7 +168,8 @@ Be careful when raising the number of operations per query, as you might hit the
 
 - PHP's [memory_limit](http://php.net/manual/en/ini.core.php#ini.memory-limit)
 - MySQL's [max_allowed_packet](https://dev.mysql.com/doc/refman/5.7/en/packet-too-large.html)
-- MySQL's limit of 65535 placeholders per statement, effectively limiting the number of operations per query to `floor(65535 / number of columns)`
 
-You can tweak the first two settings if you have access to your server's configuration, however it's important to benchmark with different batch sizes, to determine the optimal size and see if increasing the server limits is worth the effort.
-When PHP and MySQL are located on the same machine, just 100 inserts per query is usually enough to reach the maximum insert speed.
+You can tweak these settings if you have access to your server's configuration, however it's important to benchmark with different batch sizes, to determine the optimal size and see if increasing the server limits is worth the effort.
+In most cases, 100 inserts per query should give you at least 80% of the maximum throughput.
+
+MySQL also has a limit of 65535 placeholders per statement, effectively limiting the number of operations per query to `floor(65535 / number of columns)`. This does not apply if PDO emulates prepared statements.
