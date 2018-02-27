@@ -19,7 +19,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Brick\\Db\\": "src/",
+            "Brick\\Db\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Brick\\Db\\Tests\\": "tests/"
         }
     }
