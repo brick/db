@@ -64,11 +64,16 @@ abstract class BulkOperator
     private $bufferSize = 0;
 
     /**
+     * @var int
+     */
+    private $totalOperations = 0;
+
+    /**
      * The total number of affected rows.
      *
      * @var int
      */
-    private $rowCount = 0;
+    private $affectedRows = 0;
 
     /**
      * @param \PDO   $pdo                   The PDO connection.
@@ -127,12 +132,15 @@ abstract class BulkOperator
             $this->buffer[] = $value;
         }
 
-        if (++$this->bufferSize !== $this->operationsPerQuery) {
+        $this->bufferSize++;
+        $this->totalOperations++;
+
+        if ($this->bufferSize !== $this->operationsPerQuery) {
             return false;
         }
 
         $this->preparedStatement->execute($this->buffer);
-        $this->rowCount += $this->preparedStatement->rowCount();
+        $this->affectedRows += $this->preparedStatement->rowCount();
 
         $this->buffer = [];
         $this->bufferSize = 0;
@@ -160,7 +168,7 @@ abstract class BulkOperator
         $query = $this->getQuery($this->bufferSize);
         $statement = $this->pdo->prepare($query);
         $statement->execute($this->buffer);
-        $this->rowCount += $statement->rowCount();
+        $this->affectedRows += $statement->rowCount();
 
         $this->buffer = [];
         $this->bufferSize = 0;
@@ -175,9 +183,32 @@ abstract class BulkOperator
      */
     public function reset() : void
     {
-        $this->buffer     = [];
+        $this->buffer = [];
         $this->bufferSize = 0;
-        $this->rowCount   = 0;
+        $this->affectedRows = 0;
+        $this->totalOperations = 0;
+    }
+
+    /**
+     * Returns the total number of operations that have been queued.
+     *
+     * This includes both flushed and pending operations.
+     *
+     * @return int
+     */
+    public function getTotalOperations() : int
+    {
+        return $this->totalOperations;
+    }
+
+    /**
+     * Returns the number of operations that have been flushed to the database.
+     *
+     * @return int
+     */
+    public function getFlushedOperations() : int
+    {
+        return $this->totalOperations - $this->bufferSize;
     }
 
     /**
@@ -193,11 +224,13 @@ abstract class BulkOperator
     /**
      * Returns the total number of affected rows.
      *
+     * For BulkInserter, this will be equal to the number of flushed operations.
+     *
      * @return int
      */
     public function getAffectedRows() : int
     {
-        return $this->rowCount;
+        return $this->affectedRows;
     }
 
     /**

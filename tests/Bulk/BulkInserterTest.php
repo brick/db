@@ -60,19 +60,24 @@ class BulkInserterTest extends TestCase
             [[7, 'USD', '7.89'], false, 6],
         ];
 
-        $bufferSize = 0;
+        $pendingOperations = 0;
+        $flushedOperations = 0;
+        $totalOperations = 0;
 
         foreach ($data as [$parameters, $isFlush, $rowCount]) {
             $result = $inserter->queue(...$parameters);
+            $totalOperations++;
+            $pendingOperations++;
 
             if ($isFlush) {
-                $bufferSize = 0;
-            } else {
-                $bufferSize++;
+                $flushedOperations += $pendingOperations;
+                $pendingOperations = 0;
             }
 
             $this->assertSame($result, $isFlush);
-            $this->assertSame($bufferSize, $inserter->getPendingOperations());
+            $this->assertSame($totalOperations, $inserter->getTotalOperations());
+            $this->assertSame($flushedOperations, $inserter->getFlushedOperations());
+            $this->assertSame($pendingOperations, $inserter->getPendingOperations());
             $this->assertSame($rowCount, $inserter->getAffectedRows());
         }
 
@@ -102,11 +107,15 @@ class BulkInserterTest extends TestCase
         $inserter->queue(3, 'Alice');
 
         $this->assertSame(1, $inserter->getPendingOperations());
+        $this->assertSame(2, $inserter->getFlushedOperations());
+        $this->assertSame(3, $inserter->getTotalOperations());
         $this->assertSame(2, $inserter->getAffectedRows());
 
         $inserter->reset();
 
         $this->assertSame(0, $inserter->getPendingOperations());
+        $this->assertSame(0, $inserter->getFlushedOperations());
+        $this->assertSame(0, $inserter->getTotalOperations());
         $this->assertSame(0, $inserter->getAffectedRows());
     }
 }
