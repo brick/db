@@ -64,12 +64,16 @@ abstract class BulkOperator
     private $bufferSize = 0;
 
     /**
+     * The total number of operations that have been queued.
+     *
+     * This includes both flushed and pending operations.
+     *
      * @var int
      */
     private $totalOperations = 0;
 
     /**
-     * The total number of affected rows.
+     * The total number of rows affected by flushed operations.
      *
      * @var int
      */
@@ -222,9 +226,9 @@ abstract class BulkOperator
     }
 
     /**
-     * Returns the total number of affected rows.
+     * Returns the total number of rows affected by flushed operations.
      *
-     * For BulkInserter, this will be equal to the number of flushed operations.
+     * For BulkInserter, this will be equal to the number of operations flushed to the database.
      *
      * @return int
      */
