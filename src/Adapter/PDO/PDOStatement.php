@@ -30,7 +30,7 @@ class PDOStatement implements Statement
     public function fetch(bool $assoc = false) : array
     {
         try {
-            $result = $this->pdoStatement->fetch($assoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);
+            $result = @ $this->pdoStatement->fetch($assoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }
@@ -48,7 +48,7 @@ class PDOStatement implements Statement
     public function fetchAll(bool $assoc = false) : array
     {
         try {
-            $result = $this->pdoStatement->fetchAll($assoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);
+            $result = @ $this->pdoStatement->fetchAll($assoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }
@@ -65,7 +65,7 @@ class PDOStatement implements Statement
      */
     public function rowCount() : int
     {
-        return $this->pdoStatement->rowCount();
+        return @ $this->pdoStatement->rowCount();
     }
 
     /**
@@ -75,7 +75,7 @@ class PDOStatement implements Statement
     {
         // @todo check if this can actually throw an exception
         try {
-            $result = $this->pdoStatement->nextRowset();
+            $result = @ $this->pdoStatement->nextRowset();
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }
@@ -89,7 +89,7 @@ class PDOStatement implements Statement
     public function closeCursor() : void
     {
         try {
-            $result = $this->pdoStatement->closeCursor();
+            $result = @ $this->pdoStatement->closeCursor();
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }

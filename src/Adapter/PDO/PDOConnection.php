@@ -32,7 +32,7 @@ class PDOConnection implements Connection
     public function beginTransaction() : void
     {
         try {
-            $result = $this->pdo->beginTransaction();
+            $result = @ $this->pdo->beginTransaction();
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }
@@ -48,7 +48,7 @@ class PDOConnection implements Connection
     public function commit() : void
     {
         try {
-            $result = $this->pdo->commit();
+            $result = @ $this->pdo->commit();
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }
@@ -64,7 +64,7 @@ class PDOConnection implements Connection
     public function rollBack() : void
     {
         try {
-            $result = $this->pdo->rollBack();
+            $result = @ $this->pdo->rollBack();
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }
@@ -80,7 +80,7 @@ class PDOConnection implements Connection
     public function prepare(string $statement) : PreparedStatement
     {
         try {
-            $result = $this->pdo->prepare($statement);
+            $result = @ $this->pdo->prepare($statement);
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }
@@ -98,7 +98,7 @@ class PDOConnection implements Connection
     public function query(string $statement) : Statement
     {
         try {
-            $result = $this->pdo->query($statement);
+            $result = @ $this->pdo->query($statement);
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }
@@ -116,7 +116,7 @@ class PDOConnection implements Connection
     public function exec(string $statement) : int
     {
         try {
-            $result = $this->pdo->exec($statement);
+            $result = @ $this->pdo->exec($statement);
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }
@@ -135,7 +135,7 @@ class PDOConnection implements Connection
     {
         // @todo check that it actually throws an exception, and never returns false
         try {
-            $lastInsertId = $this->pdo->lastInsertId($name);
+            $lastInsertId = @ $this->pdo->lastInsertId($name);
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }

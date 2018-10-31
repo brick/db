@@ -15,7 +15,7 @@ class PDOPreparedStatement extends PDOStatement implements PreparedStatement
     public function bind($param, $value, int $type) : void
     {
         // @todo check if this can throw an exception
-        $result = $this->pdoStatement->bindValue($param, $value, $type);
+        $result = @ $this->pdoStatement->bindValue($param, $value, $type);
 
         if ($result === false) {
             throw new DbException(); // @todo
@@ -28,7 +28,7 @@ class PDOPreparedStatement extends PDOStatement implements PreparedStatement
     public function execute() : void
     {
         try {
-            $result = $this->pdoStatement->execute();
+            $result = @ $this->pdoStatement->execute();
         } catch (\PDOException $e) {
             throw new DbException(); // @todo
         }
