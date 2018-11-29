@@ -13,14 +13,11 @@ A collection of helper tools for interacting with databases.
 Installation
 ------------
 
-This library is installable via [Composer](https://getcomposer.org/).
-Just define the following requirement in your `composer.json` file:
+This library is installable via [Composer](https://getcomposer.org/):
 
-    {
-        "require": {
-            "brick/db": "0.1.*"
-        }
-    }
+```bash
+composer require brick/db
+```
 
 Requirements
 ------------
