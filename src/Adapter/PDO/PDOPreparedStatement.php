@@ -39,22 +39,22 @@ class PDOPreparedStatement extends PDOStatement implements PreparedStatement
             try {
                 $result = $this->pdoStatement->bindValue($key, $parameter, $type);
             } catch (\PDOException $e) {
-                throw new DbException(); // @todo
+                throw PDOConnection::exceptionFromPDOException($e);
             }
 
             if ($result === false) {
-                throw new DbException(); // @todo
+                throw PDOConnection::exceptionFromPDO($this->pdo);
             }
         }
 
         try {
             $result = @ $this->pdoStatement->execute();
         } catch (\PDOException $e) {
-            throw new DbException(); // @todo
+            throw PDOConnection::exceptionFromPDOException($e);
         }
 
         if ($result === false) {
-            throw new DbException(); // @todo
+            throw PDOConnection::exceptionFromPDO($this->pdo);
         }
     }
 }

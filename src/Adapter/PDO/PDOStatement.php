@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace Brick\Db\Adapter\PDO;
 
-use Brick\Db\DbException;
 use Brick\Db\Statement;
 
 class PDOStatement implements Statement
 {
+    /**
+     * @var \PDO
+     */
+    protected $pdo;
+
     /**
      * @var \PDOStatement
      */
@@ -17,10 +21,12 @@ class PDOStatement implements Statement
     /**
      * PDOStatement constructor.
      *
+     * @param \PDO          $pdo
      * @param \PDOStatement $pdoStatement
      */
-    public function __construct(\PDOStatement $pdoStatement)
+    public function __construct(\PDO $pdo, \PDOStatement $pdoStatement)
     {
+        $this->pdo          = $pdo;
         $this->pdoStatement = $pdoStatement;
     }
 
@@ -32,11 +38,11 @@ class PDOStatement implements Statement
         try {
             $result = @ $this->pdoStatement->fetch($assoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);
         } catch (\PDOException $e) {
-            throw new DbException(); // @todo
+            throw PDOConnection::exceptionFromPDOException($e);
         }
 
         if ($result === false) {
-            throw new DbException(); // @todo
+            throw PDOConnection::exceptionFromPDO($this->pdo);
         }
 
         return $result;
@@ -50,11 +56,11 @@ class PDOStatement implements Statement
         try {
             $result = @ $this->pdoStatement->fetchAll($assoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);
         } catch (\PDOException $e) {
-            throw new DbException(); // @todo
+            throw PDOConnection::exceptionFromPDOException($e);
         }
 
         if ($result === false) {
-            throw new DbException(); // @todo
+            throw PDOConnection::exceptionFromPDO($this->pdo);
         }
 
         return $result;
@@ -73,14 +79,7 @@ class PDOStatement implements Statement
      */
     public function nextRowset() : bool
     {
-        // @todo check if this can actually throw an exception
-        try {
-            $result = @ $this->pdoStatement->nextRowset();
-        } catch (\PDOException $e) {
-            throw new DbException(); // @todo
-        }
-
-        return $result;
+        return @ $this->pdoStatement->nextRowset();
     }
 
     /**
@@ -91,11 +90,11 @@ class PDOStatement implements Statement
         try {
             $result = @ $this->pdoStatement->closeCursor();
         } catch (\PDOException $e) {
-            throw new DbException(); // @todo
+            throw PDOConnection::exceptionFromPDOException($e);
         }
 
         if ($result === false) {
-            throw new DbException(); // @todo
+            throw PDOConnection::exceptionFromPDO($this->pdo);
         }
     }
 }
