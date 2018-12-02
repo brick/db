@@ -95,8 +95,15 @@ class PDOConnection implements Connection
     /**
      * @inheritdoc
      */
-    public function query(string $statement) : Statement
+    public function query(string $statement, array $parameters = []) : Statement
     {
+        if ($parameters) {
+            $statement = $this->prepare($statement);
+            $statement->execute($parameters);
+
+            return $statement;
+        }
+
         try {
             $result = @ $this->pdo->query($statement);
         } catch (\PDOException $e) {

@@ -38,12 +38,13 @@ interface Connection
 
     /**
      * @param string $statement
+     * @param array  $parameters
      *
      * @return Statement
      *
      * @throws DbException
      */
-    public function query(string $statement) : Statement;
+    public function query(string $statement, array $parameters = []) : Statement;
 
     /**
      * @param string $statement
