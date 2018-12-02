@@ -82,10 +82,10 @@ abstract class BulkOperator
     private $affectedRows = 0;
 
     /**
-     * @param \PDO   $pdo                   The PDO connection.
-     * @param string $table                 The name of the table.
-     * @param array  $fields                The name of the relevant fields.
-     * @param int    $operationsPerQuery    The number of operations to process in a single query.
+     * @param \PDO   $pdo                The PDO connection.
+     * @param string $table              The name of the table.
+     * @param array  $fields             The name of the relevant fields.
+     * @param int    $operationsPerQuery The number of operations to process in a single query.
      *
      * @throws \InvalidArgumentException
      */
