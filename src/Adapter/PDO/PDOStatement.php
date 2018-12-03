@@ -9,11 +9,6 @@ use Brick\Db\Statement;
 class PDOStatement implements Statement
 {
     /**
-     * @var \PDO
-     */
-    protected $pdo;
-
-    /**
      * @var \PDOStatement
      */
     protected $pdoStatement;
@@ -21,12 +16,10 @@ class PDOStatement implements Statement
     /**
      * PDOStatement constructor.
      *
-     * @param \PDO          $pdo
      * @param \PDOStatement $pdoStatement
      */
-    public function __construct(\PDO $pdo, \PDOStatement $pdoStatement)
+    public function __construct(\PDOStatement $pdoStatement)
     {
-        $this->pdo          = $pdo;
         $this->pdoStatement = $pdoStatement;
     }
 
@@ -42,7 +35,7 @@ class PDOStatement implements Statement
         }
 
         if ($result === false) {
-            throw PDOConnection::exceptionFromPDO($this->pdo);
+            throw PDOConnection::exceptionFromPDOStatement($this->pdoStatement);
         }
 
         return $result;
@@ -60,7 +53,7 @@ class PDOStatement implements Statement
         }
 
         if ($result === false) {
-            throw PDOConnection::exceptionFromPDO($this->pdo);
+            throw PDOConnection::exceptionFromPDOStatement($this->pdoStatement);
         }
 
         return $result;
@@ -94,7 +87,7 @@ class PDOStatement implements Statement
         }
 
         if ($result === false) {
-            throw PDOConnection::exceptionFromPDO($this->pdo);
+            throw PDOConnection::exceptionFromPDOStatement($this->pdoStatement);
         }
     }
 }

@@ -43,7 +43,7 @@ class PDOPreparedStatement extends PDOStatement implements PreparedStatement
             }
 
             if ($result === false) {
-                throw PDOConnection::exceptionFromPDO($this->pdo);
+                throw PDOConnection::exceptionFromPDOStatement($this->pdoStatement);
             }
         }
 
@@ -54,7 +54,7 @@ class PDOPreparedStatement extends PDOStatement implements PreparedStatement
         }
 
         if ($result === false) {
-            throw PDOConnection::exceptionFromPDO($this->pdo);
+            throw PDOConnection::exceptionFromPDOStatement($this->pdoStatement);
         }
     }
 }

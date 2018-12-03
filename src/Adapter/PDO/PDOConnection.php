@@ -91,7 +91,7 @@ class PDOConnection implements Connection
             throw self::exceptionFromPDO($this->pdo);
         }
 
-        return new PDOPreparedStatement($this->pdo, $result);
+        return new PDOPreparedStatement($result);
     }
 
     /**
@@ -116,7 +116,7 @@ class PDOConnection implements Connection
             throw self::exceptionFromPDO($this->pdo);
         }
 
-        return new PDOStatement($this->pdo, $result);
+        return new PDOStatement($result);
     }
 
     /**
@@ -169,6 +169,18 @@ class PDOConnection implements Connection
     public static function exceptionFromPDO(\PDO $pdo) : DbException
     {
         return self::exceptionFromErrorInfo($pdo->errorInfo());
+    }
+
+    /**
+     * Creates an DbException from a PDOStatement last error info.
+     *
+     * @param \PDOStatement $pdoStatement
+     *
+     * @return DbException
+     */
+    public static function exceptionFromPDOStatement(\PDOStatement $pdoStatement) : DbException
+    {
+        return self::exceptionFromErrorInfo($pdoStatement->errorInfo());
     }
 
     /**
