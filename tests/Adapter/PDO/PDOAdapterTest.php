@@ -16,9 +16,9 @@ abstract class PDOAdapterTest extends AdapterTest
     /**
      * @return Connection
      */
-    protected static function getConnection() : Connection
+    protected function getConnection() : Connection
     {
-        $pdo = static::getPDO();
+        $pdo = $this->getPDO();
 
         foreach (static::getAttributes() as $attribute => $value) {
             $pdo->setAttribute($attribute, $value);
@@ -32,7 +32,7 @@ abstract class PDOAdapterTest extends AdapterTest
      *
      * @return \PDO
      */
-    abstract protected static function getPDO() : \PDO;
+    abstract protected function getPDO() : \PDO;
 
     /**
      * Returns an array mapping PDO attributes to their value.

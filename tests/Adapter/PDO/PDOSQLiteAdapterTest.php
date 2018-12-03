@@ -12,8 +12,24 @@ abstract class PDOSQLiteAdapterTest extends PDOAdapterTest
     /**
      * @inheritdoc
      */
-    protected static function getPDO() : \PDO
+    protected function getPDO() : \PDO
     {
         return new \PDO('sqlite::memory:');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function supportsKillConnection() : bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function killConnection() : void
+    {
+        throw new \RuntimeException('Killing connection is not supported on SQLite.');
     }
 }

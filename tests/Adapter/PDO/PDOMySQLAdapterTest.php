@@ -12,9 +12,38 @@ abstract class PDOMySQLAdapterTest extends PDOAdapterTest
     /**
      * @inheritdoc
      */
-    protected static function getPDO() : \PDO
+    protected function getPDO() : \PDO
     {
         return new \PDO('mysql:host=localhost;dbname=test', 'root', '');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function supportsKillConnection() : bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function killConnection() : void
+    {
+        // Use a separate connection.
+        $pdo = $this->getPDO();
+
+        // Kill all other connections.
+        $ids = $pdo->query(
+            'SELECT ID FROM information_schema.PROCESSLIST ' .
+            'WHERE USER = SUBSTRING_INDEX(CURRENT_USER, "@", 1) ' .
+            'AND HOST = SUBSTRING_INDEX(CURRENT_USER, "@", -1) ' .
+            'AND STATE != "executing"'
+        )->fetchAll(\PDO::FETCH_COLUMN);
+
+        foreach ($ids as $id) {
+            $pdo->query("KILL CONNECTION $id");
+        }
     }
 
     /**

@@ -12,6 +12,8 @@ use Brick\Db\Statement;
 class PDOConnection implements Connection
 {
     /**
+     * The PDO connection.
+     *
      * @var \PDO
      */
     private $pdo;
@@ -172,14 +174,20 @@ class PDOConnection implements Connection
     /**
      * Creates an DbException from a PDO errorInfo array.
      *
-     * @param array              $errorInfo
+     * @param array|null         $errorInfo
      * @param \PDOException|null $pdoException
      *
      * @return DbException
      */
-    private static function exceptionFromErrorInfo(array $errorInfo, ?\PDOException $pdoException = null) : DbException
+    private static function exceptionFromErrorInfo(?array $errorInfo, ?\PDOException $pdoException = null) : DbException
     {
-        [$sqlState, $errorCode, $errorMessage] = $errorInfo;
+        if ($errorInfo === null) {
+            $sqlState = '';
+            $errorMessage = null;
+            $errorCode = 0;
+        } else {
+            [$sqlState, $errorCode, $errorMessage] = $errorInfo;
+        }
 
         if ($sqlState === '') {
             $sqlState = null;
