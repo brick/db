@@ -73,18 +73,9 @@ abstract class AdapterTest extends TestCase
         $this->connection->commit();
     }
 
-    public function testRollBackFailure()
+    public function testRollBackNonExistingTransaction()
     {
-        if (! $this->supportsKillConnection()) {
-            self::markTestSkipped();
-        }
-
-        $this->connection->beginTransaction();
-        $this->killConnection();
         $this->expectException(DbException::class);
-
-        // On MySQL (8.0.13), the first rollBack() fails silently and does not throw an exception. Why?
-        $this->connection->rollBack();
         $this->connection->rollBack();
     }
 
