@@ -174,27 +174,25 @@ class PDOConnection implements Connection
     /**
      * Creates an DbException from a PDO errorInfo array.
      *
-     * @param array|null         $errorInfo
-     * @param \PDOException|null $pdoException
+     * Note: PDOException::$errorInfo can contain NULL, for example when committing a non-existing transaction on MySQL.
+     * This is not documented on the php.net website.
+     *
+     * @param array|null         $errorInfo    The errorInfo array from PDO, PDOStatement or PDOException,
+     *                                         or NULL if not available.
+     * @param \PDOException|null $pdoException The PDO exception, if any.
      *
      * @return DbException
      */
     private static function exceptionFromErrorInfo(?array $errorInfo, ?\PDOException $pdoException = null) : DbException
     {
         if ($errorInfo === null) {
-            $sqlState = '';
-            $errorMessage = null;
-            $errorCode = 0;
-        } else {
-            [$sqlState, $errorCode, $errorMessage] = $errorInfo;
+            $errorInfo = ['00000', null, null];
         }
 
-        if ($sqlState === '') {
-            $sqlState = null;
-        }
+        [$sqlState, $errorCode, $errorMessage] = $errorInfo;
 
         if ($errorMessage === null) {
-            $errorMessage = 'Unknown error.';
+            $errorMessage = $pdoException ? $pdoException->getMessage() : 'Unknown PDO error.';
         }
 
         return new DbException($errorMessage, $sqlState, $errorCode, $pdoException);
