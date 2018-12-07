@@ -11,11 +11,11 @@ interface Statement
      *
      * @param bool $assoc True to return the result as an associative array, false for a numeric array (default).
      *
-     * @return array A numeric or associative array of column values.
+     * @return array|null A numeric or associative array of column values, or null if no more rows.
      *
      * @throws DbException If an error occurs.
      */
-    public function fetch(bool $assoc = false) : array;
+    public function fetch(bool $assoc = false) : ?array;
 
     /**
      * Returns an array containing all of the remaining rows in the current result set.

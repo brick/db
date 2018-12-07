@@ -26,7 +26,7 @@ class PDOStatement implements Statement
     /**
      * @inheritdoc
      */
-    public function fetch(bool $assoc = false) : array
+    public function fetch(bool $assoc = false) : ?array
     {
         try {
             $result = @ $this->pdoStatement->fetch($assoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);
@@ -35,7 +35,7 @@ class PDOStatement implements Statement
         }
 
         if ($result === false) {
-            throw PDOConnection::exceptionFromPDOStatement($this->pdoStatement);
+            return null;
         }
 
         return $result;
