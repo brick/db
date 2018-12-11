@@ -9,18 +9,29 @@ use Brick\Db\Statement;
 class PDOStatement implements Statement
 {
     /**
+     * The wrapped PDO statement.
+     *
      * @var \PDOStatement
      */
     protected $pdoStatement;
 
     /**
+     * The SQL statement being prepared.
+     *
+     * @var string
+     */
+    protected $sqlStatement;
+
+    /**
      * PDOStatement constructor.
      *
-     * @param \PDOStatement $pdoStatement
+     * @param \PDOStatement $pdoStatement The wrapped PDO statement.
+     * @param string        $sqlStatement The SQL statement being prepared.
      */
-    public function __construct(\PDOStatement $pdoStatement)
+    public function __construct(\PDOStatement $pdoStatement, string $sqlStatement)
     {
         $this->pdoStatement = $pdoStatement;
+        $this->sqlStatement = $sqlStatement;
     }
 
     /**
@@ -31,7 +42,7 @@ class PDOStatement implements Statement
         try {
             $result = @ $this->pdoStatement->fetch($assoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);
         } catch (\PDOException $e) {
-            throw PDOConnection::exceptionFromPDOException($e);
+            throw PDOConnection::exceptionFromPDOException($e, $this->sqlStatement);
         }
 
         if ($result === false) {
@@ -49,11 +60,11 @@ class PDOStatement implements Statement
         try {
             $result = @ $this->pdoStatement->fetchAll($assoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);
         } catch (\PDOException $e) {
-            throw PDOConnection::exceptionFromPDOException($e);
+            throw PDOConnection::exceptionFromPDOException($e, $this->sqlStatement);
         }
 
         if ($result === false) {
-            throw PDOConnection::exceptionFromPDOStatement($this->pdoStatement);
+            throw PDOConnection::exceptionFromPDOStatement($this->pdoStatement, $this->sqlStatement);
         }
 
         return $result;
@@ -83,11 +94,11 @@ class PDOStatement implements Statement
         try {
             $result = @ $this->pdoStatement->closeCursor();
         } catch (\PDOException $e) {
-            throw PDOConnection::exceptionFromPDOException($e);
+            throw PDOConnection::exceptionFromPDOException($e, $this->sqlStatement);
         }
 
         if ($result === false) {
-            throw PDOConnection::exceptionFromPDOStatement($this->pdoStatement);
+            throw PDOConnection::exceptionFromPDOStatement($this->pdoStatement, $this->sqlStatement);
         }
     }
 }

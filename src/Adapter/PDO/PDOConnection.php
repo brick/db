@@ -84,14 +84,14 @@ class PDOConnection implements Connection
         try {
             $result = @ $this->pdo->prepare($statement);
         } catch (\PDOException $e) {
-            throw self::exceptionFromPDOException($e);
+            throw self::exceptionFromPDOException($e, $statement);
         }
 
         if ($result === false) {
-            throw self::exceptionFromPDO($this->pdo);
+            throw self::exceptionFromPDO($this->pdo, $statement);
         }
 
-        return new PDOPreparedStatement($result);
+        return new PDOPreparedStatement($result, $statement);
     }
 
     /**
@@ -109,14 +109,14 @@ class PDOConnection implements Connection
         try {
             $result = @ $this->pdo->query($statement);
         } catch (\PDOException $e) {
-            throw self::exceptionFromPDOException($e);
+            throw self::exceptionFromPDOException($e, $statement);
         }
 
         if ($result === false) {
-            throw self::exceptionFromPDO($this->pdo);
+            throw self::exceptionFromPDO($this->pdo, $statement);
         }
 
-        return new PDOStatement($result);
+        return new PDOStatement($result, $statement);
     }
 
     /**
@@ -127,11 +127,11 @@ class PDOConnection implements Connection
         try {
             $result = @ $this->pdo->exec($statement);
         } catch (\PDOException $e) {
-            throw self::exceptionFromPDOException($e);
+            throw self::exceptionFromPDOException($e, $statement);
         }
 
         if ($result === false) {
-            throw self::exceptionFromPDO($this->pdo);
+            throw self::exceptionFromPDO($this->pdo, $statement);
         }
 
         return $result;
@@ -150,37 +150,40 @@ class PDOConnection implements Connection
     /**
      * Creates a DbException from the PDO last error info.
      *
-     * @param \PDO $pdo
+     * @param \PDO        $pdo          The PDO connection.
+     * @param string|null $sqlStatement The SQL statement that generated an exception, if any.
      *
      * @return DbException
      */
-    public static function exceptionFromPDO(\PDO $pdo) : DbException
+    public static function exceptionFromPDO(\PDO $pdo, ?string $sqlStatement = null) : DbException
     {
-        return self::exceptionFromErrorInfo($pdo->errorInfo());
+        return self::exceptionFromErrorInfo($pdo->errorInfo(), $sqlStatement);
     }
 
     /**
      * Creates a DbException from a PDOStatement last error info.
      *
-     * @param \PDOStatement $pdoStatement
+     * @param \PDOStatement $pdoStatement The PDO statement.
+     * @param string|null   $sqlStatement The SQL statement that generated an exception, if any.
      *
      * @return DbException
      */
-    public static function exceptionFromPDOStatement(\PDOStatement $pdoStatement) : DbException
+    public static function exceptionFromPDOStatement(\PDOStatement $pdoStatement, ?string $sqlStatement = null) : DbException
     {
-        return self::exceptionFromErrorInfo($pdoStatement->errorInfo());
+        return self::exceptionFromErrorInfo($pdoStatement->errorInfo(), $sqlStatement);
     }
 
     /**
      * Creates a DbException from a PDOException.
      *
-     * @param \PDOException $pdoException
+     * @param \PDOException $pdoException The PDO exception.
+     * @param string|null   $sqlStatement The SQL statement that generated an exception, if any.
      *
      * @return DbException
      */
-    public static function exceptionFromPDOException(\PDOException $pdoException) : DbException
+    public static function exceptionFromPDOException(\PDOException $pdoException, ?string $sqlStatement = null) : DbException
     {
-        return self::exceptionFromErrorInfo($pdoException->errorInfo, $pdoException);
+        return self::exceptionFromErrorInfo($pdoException->errorInfo, $pdoException, $sqlStatement);
     }
 
     /**
@@ -192,10 +195,11 @@ class PDOConnection implements Connection
      * @param array|null         $errorInfo    The errorInfo array from PDO, PDOStatement or PDOException,
      *                                         or NULL if not available.
      * @param \PDOException|null $pdoException The PDO exception, if any.
+     * @param string|null        $sqlStatement The SQL statement that generated an exception, if any.
      *
      * @return DbException
      */
-    private static function exceptionFromErrorInfo(?array $errorInfo, ?\PDOException $pdoException = null) : DbException
+    private static function exceptionFromErrorInfo(?array $errorInfo, ?\PDOException $pdoException = null, ?string $sqlStatement = null) : DbException
     {
         if ($errorInfo === null) {
             $errorInfo = ['00000', null, null];
@@ -207,6 +211,10 @@ class PDOConnection implements Connection
             $errorMessage = $pdoException ? $pdoException->getMessage() : 'Unknown PDO error.';
         }
 
-        return new DbException($errorMessage, $sqlState, $errorCode, $pdoException);
+        if ($sqlStatement !== null) {
+            $errorMessage .= ' While executing: ' . $sqlStatement;
+        }
+
+        return new DbException($errorMessage, $sqlStatement, $sqlState, $errorCode, $pdoException);
     }
 }
