@@ -148,7 +148,7 @@ class PDOConnection implements Connection
     }
 
     /**
-     * Creates an DbException from the PDO last error info.
+     * Creates a DbException from the PDO last error info.
      *
      * @param \PDO $pdo
      *
@@ -160,7 +160,7 @@ class PDOConnection implements Connection
     }
 
     /**
-     * Creates an DbException from a PDOStatement last error info.
+     * Creates a DbException from a PDOStatement last error info.
      *
      * @param \PDOStatement $pdoStatement
      *
@@ -172,7 +172,7 @@ class PDOConnection implements Connection
     }
 
     /**
-     * Creates an DbException from a PDOException.
+     * Creates a DbException from a PDOException.
      *
      * @param \PDOException $pdoException
      *
@@ -184,7 +184,7 @@ class PDOConnection implements Connection
     }
 
     /**
-     * Creates an DbException from a PDO errorInfo array.
+     * Creates a DbException from a PDO errorInfo array.
      *
      * Note: PDOException::$errorInfo can contain NULL, for example when committing a non-existing transaction on MySQL.
      * This is not documented on the php.net website.
