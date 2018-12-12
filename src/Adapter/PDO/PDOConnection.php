@@ -157,7 +157,7 @@ class PDOConnection implements Connection
      */
     public static function exceptionFromPDO(\PDO $pdo, ?string $sqlStatement = null) : DbException
     {
-        return self::exceptionFromErrorInfo($pdo->errorInfo(), null, $sqlStatement);
+        return self::exceptionFromErrorInfo($pdo->errorInfo(), $sqlStatement);
     }
 
     /**
@@ -170,7 +170,7 @@ class PDOConnection implements Connection
      */
     public static function exceptionFromPDOStatement(\PDOStatement $pdoStatement, ?string $sqlStatement = null) : DbException
     {
-        return self::exceptionFromErrorInfo($pdoStatement->errorInfo(), null, $sqlStatement);
+        return self::exceptionFromErrorInfo($pdoStatement->errorInfo(), $sqlStatement);
     }
 
     /**
@@ -183,7 +183,7 @@ class PDOConnection implements Connection
      */
     public static function exceptionFromPDOException(\PDOException $pdoException, ?string $sqlStatement = null) : DbException
     {
-        return self::exceptionFromErrorInfo($pdoException->errorInfo, $pdoException, $sqlStatement);
+        return self::exceptionFromErrorInfo($pdoException->errorInfo, $sqlStatement, $pdoException);
     }
 
     /**
@@ -194,12 +194,12 @@ class PDOConnection implements Connection
      *
      * @param array|null         $errorInfo    The errorInfo array from PDO, PDOStatement or PDOException,
      *                                         or NULL if not available.
-     * @param \PDOException|null $pdoException The PDO exception, if any.
      * @param string|null        $sqlStatement The SQL statement that generated an exception, if any.
+     * @param \PDOException|null $pdoException The PDO exception, if any.
      *
      * @return DbException
      */
-    private static function exceptionFromErrorInfo(?array $errorInfo, ?\PDOException $pdoException = null, ?string $sqlStatement = null) : DbException
+    private static function exceptionFromErrorInfo(?array $errorInfo, ?string $sqlStatement, ?\PDOException $pdoException = null) : DbException
     {
         if ($errorInfo === null) {
             $errorInfo = ['00000', null, null];
