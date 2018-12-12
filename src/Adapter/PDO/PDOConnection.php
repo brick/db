@@ -157,7 +157,7 @@ class PDOConnection implements Connection
      */
     public static function exceptionFromPDO(\PDO $pdo, ?string $sqlStatement = null) : DbException
     {
-        return self::exceptionFromErrorInfo($pdo->errorInfo(), $sqlStatement);
+        return self::exceptionFromErrorInfo($pdo->errorInfo(), null, $sqlStatement);
     }
 
     /**
@@ -170,7 +170,7 @@ class PDOConnection implements Connection
      */
     public static function exceptionFromPDOStatement(\PDOStatement $pdoStatement, ?string $sqlStatement = null) : DbException
     {
-        return self::exceptionFromErrorInfo($pdoStatement->errorInfo(), $sqlStatement);
+        return self::exceptionFromErrorInfo($pdoStatement->errorInfo(), null, $sqlStatement);
     }
 
     /**
