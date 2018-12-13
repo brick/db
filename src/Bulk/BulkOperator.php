@@ -82,10 +82,15 @@ abstract class BulkOperator
     private $affectedRows = 0;
 
     /**
-     * @param \PDO   $pdo                The PDO connection.
-     * @param string $table              The name of the table.
-     * @param array  $fields             The name of the relevant fields.
-     * @param int    $operationsPerQuery The number of operations to process in a single query.
+     * @var string Character used to quote identifiers
+     */
+    private $identifierQuoteCharacter;
+
+    /**
+     * @param \PDO $pdo The PDO connection.
+     * @param string $table The name of the table.
+     * @param array $fields The name of the relevant fields.
+     * @param int $operationsPerQuery The number of operations to process in a single query.
      *
      * @throws \InvalidArgumentException
      */
@@ -101,9 +106,11 @@ abstract class BulkOperator
             throw new \InvalidArgumentException('The field list is empty.');
         }
 
-        $this->pdo       = $pdo;
-        $this->table     = $table;
-        $this->fields    = $fields;
+        $this->pdo = $pdo;
+        $this->detectIdentifierQuoteCharacter();
+
+        $this->table = $this->quoteIdentifier($table);
+        $this->fields = array_map([$this, 'quoteIdentifier'], $fields);
         $this->numFields = $numFields;
 
         $this->operationsPerQuery = $operationsPerQuery;
@@ -127,11 +134,13 @@ abstract class BulkOperator
         $count = count($values);
 
         if ($count !== $this->numFields) {
-            throw new \InvalidArgumentException(sprintf(
-                'The number of values (%u) does not match the field count (%u).',
-                $count,
-                $this->numFields
-            ));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'The number of values (%u) does not match the field count (%u).',
+                    $count,
+                    $this->numFields
+                )
+            );
         }
 
         foreach ($values as $value) {
@@ -245,4 +254,35 @@ abstract class BulkOperator
      * @return string
      */
     abstract protected function getQuery(int $numRecords) : string;
+
+    /**
+     *  Detects what quoting character has to be used.
+     *
+     * It depends on the database driver.
+     */
+    private function detectIdentifierQuoteCharacter() : void
+    {
+        switch ($this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME)) {
+            case 'pgsql':
+                $this->identifierQuoteCharacter = '"';
+                break;
+            case 'mysql':
+            case 'sqlite':
+            default:
+                $this->identifierQuoteCharacter = '`';
+                break;
+        }
+    }
+
+    /**
+     * Quote identifier using quoted character
+     *
+     * @param string $identifier
+     *
+     * @return string
+     */
+    private function quoteIdentifier(string $identifier) : string
+    {
+        return $this->identifierQuoteCharacter . $identifier . $this->identifierQuoteCharacter;
+    }
 }
