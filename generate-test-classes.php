@@ -7,8 +7,8 @@
  * https://github.com/sebastianbergmann/phpunit/issues/3212#issuecomment-434498391
  */
 
-use Brick\Db\Tests\Adapter\PDO\PDOMySQLAdapterTest;
-use Brick\Db\Tests\Adapter\PDO\PDOSQLiteAdapterTest;
+use Brick\Db\Tests\Driver\PDO\PDOMySQLDriverTest;
+use Brick\Db\Tests\Driver\PDO\PDOSQLiteDriverTest;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -26,8 +26,8 @@ fclose($fp);
  */
 
 $classes = [
-    PDOMySQLAdapterTest::class,
-    PDOSQLiteAdapterTest::class
+    PDOMySQLDriverTest::class,
+    PDOSQLiteDriverTest::class
 ];
 
 /**
@@ -79,7 +79,7 @@ foreach ($classes as $baseClass) {
         $php = str_replace('_CLASSNAME_', $className, $php);
         $php = str_replace('/*ATTRIBUTES*/', $attributesArray, $php);
 
-        $fileName = __DIR__ . '/tests/Adapter/PDO/Variations/' . $className . '.php';
+        $fileName = __DIR__ . '/tests/Driver/PDO/Variations/' . $className . '.php';
 
         file_put_contents($fileName, $php);
     }
@@ -95,7 +95,7 @@ __halt_compiler();<?php
 
 declare(strict_types=1);
 
-namespace Brick\Db\Tests\Adapter\PDO\Variations;
+namespace Brick\Db\Tests\Driver\PDO\Variations;
 
 /**
  * Tests for _BASECLASS_ with specific PDO attributes.
