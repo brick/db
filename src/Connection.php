@@ -11,7 +11,7 @@ class Connection
     /**
      * @var Driver\Connection
      */
-    private $driverConnection;
+    protected $driverConnection;
 
     /**
      * @param Driver\Connection $driverConnection
@@ -31,7 +31,7 @@ class Connection
         try {
             $this->driverConnection->beginTransaction();
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e);
         }
     }
 
@@ -45,7 +45,7 @@ class Connection
         try {
             $this->driverConnection->commit();
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e);
         }
     }
 
@@ -59,7 +59,7 @@ class Connection
         try {
             $this->driverConnection->rollBack();
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e);
         }
     }
 
@@ -75,10 +75,10 @@ class Connection
         try {
             $driverStatement = $this->driverConnection->prepare($statement);
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e, $statement);
         }
 
-        return new PreparedStatement($driverStatement);
+        return new PreparedStatement($driverStatement, $statement);
     }
 
     /**
@@ -101,10 +101,10 @@ class Connection
         try {
             $driverStatement = $this->driverConnection->query($statement);
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e, $statement);
         }
 
-        return new Statement($driverStatement);
+        return new Statement($driverStatement, $statement);
     }
 
     /**
@@ -119,7 +119,7 @@ class Connection
         try {
             return $this->driverConnection->exec($statement);
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e, $statement);
         }
     }
 
@@ -135,7 +135,7 @@ class Connection
         try {
             return $this->driverConnection->lastInsertId($name);
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e);
         }
     }
 }

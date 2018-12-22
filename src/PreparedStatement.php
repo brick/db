@@ -11,16 +11,17 @@ class PreparedStatement extends Statement
     /**
      * @var Driver\PreparedStatement
      */
-    private $driverStatement;
+    protected $driverPreparedStatement;
 
     /**
      * @param Driver\PreparedStatement $driverStatement
+     * @param string                   $sqlStatement
      */
-    public function __construct(Driver\PreparedStatement $driverStatement)
+    public function __construct(Driver\PreparedStatement $driverStatement, string $sqlStatement)
     {
-        parent::__construct($driverStatement);
+        parent::__construct($driverStatement, $sqlStatement);
 
-        $this->driverStatement = $driverStatement;
+        $this->driverPreparedStatement = $driverStatement;
     }
 
     /**
@@ -53,9 +54,9 @@ class PreparedStatement extends Statement
     public function execute(array $parameters = []) : void
     {
         try {
-            $this->driverStatement->execute($parameters);
+            $this->driverPreparedStatement->execute($parameters);
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e, $this->sqlStatement, $parameters);
         }
     }
 }

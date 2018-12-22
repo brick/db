@@ -11,14 +11,21 @@ class Statement
     /**
      * @var Driver\Statement
      */
-    private $driverStatement;
+    protected $driverStatement;
+
+    /**
+     * @var string
+     */
+    protected $sqlStatement;
 
     /**
      * @param Driver\Statement $driverStatement
+     * @param string           $sqlStatement
      */
-    public function __construct(Driver\Statement $driverStatement)
+    public function __construct(Driver\Statement $driverStatement, string $sqlStatement)
     {
         $this->driverStatement = $driverStatement;
+        $this->sqlStatement    = $sqlStatement;
     }
 
     /**
@@ -35,7 +42,7 @@ class Statement
         try {
             return $this->driverStatement->fetch($assoc);
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e, $this->sqlStatement);
         }
     }
 
@@ -57,7 +64,7 @@ class Statement
         try {
             return $this->driverStatement->fetchAll($assoc);
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e, $this->sqlStatement);
         }
     }
 
@@ -78,7 +85,7 @@ class Statement
         try {
             return $this->driverStatement->rowCount();
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e, $this->sqlStatement);
         }
     }
 
@@ -100,7 +107,7 @@ class Statement
         try {
             return $this->driverStatement->nextRowset();
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e, $this->sqlStatement);
         }
     }
 
@@ -125,7 +132,7 @@ class Statement
         try {
             $this->driverStatement->closeCursor();
         } catch (Driver\DriverException $e) {
-            throw new DbException($e->getMessage(), 0, $e); // @todo
+            throw DbException::fromDriverException($e, $this->sqlStatement);
         }
     }
 }
