@@ -91,8 +91,15 @@ class Connection
      */
     public function query(string $statement, array $parameters = []) : Statement
     {
+        if ($parameters) {
+            $statement = $this->prepare($statement);
+            $statement->execute($parameters);
+
+            return $statement;
+        }
+
         try {
-            $driverStatement = $this->driverConnection->query($statement, $parameters);
+            $driverStatement = $this->driverConnection->query($statement);
         } catch (Driver\DriverException $e) {
             throw new DbException($e->getMessage(), 0, $e); // @todo
         }

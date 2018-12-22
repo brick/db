@@ -38,13 +38,12 @@ interface Connection
 
     /**
      * @param string $statement
-     * @param array  $parameters
      *
      * @return Statement
      *
      * @throws DriverException
      */
-    public function query(string $statement, array $parameters = []) : Statement;
+    public function query(string $statement) : Statement;
 
     /**
      * @param string $statement
