@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Brick\Db;
 
 use Brick\Db\Driver;
+use Brick\Db\Internal\TimerLogger;
 
 class PreparedStatement extends Statement
 {
@@ -14,14 +15,21 @@ class PreparedStatement extends Statement
     protected $driverPreparedStatement;
 
     /**
+     * @var TimerLogger
+     */
+    protected $logger;
+
+    /**
      * @param Driver\PreparedStatement $driverStatement
      * @param string                   $sqlStatement
+     * @param TimerLogger              $logger
      */
-    public function __construct(Driver\PreparedStatement $driverStatement, string $sqlStatement)
+    public function __construct(Driver\PreparedStatement $driverStatement, string $sqlStatement, TimerLogger $logger)
     {
         parent::__construct($driverStatement, $sqlStatement);
 
         $this->driverPreparedStatement = $driverStatement;
+        $this->logger                  = $logger;
     }
 
     /**
@@ -53,10 +61,14 @@ class PreparedStatement extends Statement
      */
     public function execute(array $parameters = []) : void
     {
+        $this->logger->start($this->sqlStatement, $parameters);
+
         try {
             $this->driverPreparedStatement->execute($parameters);
         } catch (Driver\DriverException $e) {
             throw DbException::fromDriverException($e, $this->sqlStatement, $parameters);
+        } finally {
+            $this->logger->stop();
         }
     }
 }

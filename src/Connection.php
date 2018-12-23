@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Brick\Db;
 
 use Brick\Db\Driver;
+use Brick\Db\Internal\TimerLogger;
 
 class Connection
 {
@@ -14,11 +15,18 @@ class Connection
     protected $driverConnection;
 
     /**
-     * @param Driver\Connection $driverConnection
+     * @var TimerLogger
      */
-    public function __construct(Driver\Connection $driverConnection)
+    protected $logger;
+
+    /**
+     * @param Driver\Connection $driverConnection
+     * @param Logger|null       $logger
+     */
+    public function __construct(Driver\Connection $driverConnection, ?Logger $logger = null)
     {
         $this->driverConnection = $driverConnection;
+        $this->logger           = new TimerLogger($logger);
     }
 
     /**
@@ -28,10 +36,14 @@ class Connection
      */
     public function beginTransaction() : void
     {
+        $this->logger->start('BEGIN TRANSACTION');
+
         try {
             $this->driverConnection->beginTransaction();
         } catch (Driver\DriverException $e) {
             throw DbException::fromDriverException($e);
+        } finally {
+            $this->logger->stop();
         }
     }
 
@@ -42,10 +54,14 @@ class Connection
      */
     public function commit() : void
     {
+        $this->logger->start('COMMIT');
+
         try {
             $this->driverConnection->commit();
         } catch (Driver\DriverException $e) {
             throw DbException::fromDriverException($e);
+        } finally {
+            $this->logger->stop();
         }
     }
 
@@ -56,10 +72,14 @@ class Connection
      */
     public function rollBack() : void
     {
+        $this->logger->start('ROLLBACK');
+
         try {
             $this->driverConnection->rollBack();
         } catch (Driver\DriverException $e) {
             throw DbException::fromDriverException($e);
+        } finally {
+            $this->logger->stop();
         }
     }
 
@@ -78,7 +98,7 @@ class Connection
             throw DbException::fromDriverException($e, $statement);
         }
 
-        return new PreparedStatement($driverStatement, $statement);
+        return new PreparedStatement($driverStatement, $statement, $this->logger);
     }
 
     /**
@@ -98,10 +118,14 @@ class Connection
             return $statement;
         }
 
+        $this->logger->start($statement);
+
         try {
             $driverStatement = $this->driverConnection->query($statement);
         } catch (Driver\DriverException $e) {
             throw DbException::fromDriverException($e, $statement);
+        } finally {
+            $this->logger->stop();
         }
 
         return new Statement($driverStatement, $statement);
@@ -116,10 +140,14 @@ class Connection
      */
     public function exec(string $statement) : int
     {
+        $this->logger->start($statement);
+
         try {
             return $this->driverConnection->exec($statement);
         } catch (Driver\DriverException $e) {
             throw DbException::fromDriverException($e, $statement);
+        } finally {
+            $this->logger->stop();
         }
     }
 
