@@ -48,6 +48,14 @@ class DebugLogger implements Logger
     }
 
     /**
+     * @return int
+     */
+    public function count() : int
+    {
+        return count($this->debugStatements);
+    }
+
+    /**
      * @return void
      */
     public function reset() : void
