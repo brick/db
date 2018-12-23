@@ -84,7 +84,7 @@ class Connection
     }
 
     /**
-     * @param string $statement
+     * @param string $statement The SQL statement.
      *
      * @return PreparedStatement
      *
@@ -102,8 +102,8 @@ class Connection
     }
 
     /**
-     * @param string $statement
-     * @param array  $parameters
+     * @param string $statement  The SQL statement.
+     * @param array  $parameters The optional bound parameters.
      *
      * @return Statement
      *
@@ -132,7 +132,7 @@ class Connection
     }
 
     /**
-     * @param string $statement
+     * @param string $statement The SQL statement.
      *
      * @return int
      *
