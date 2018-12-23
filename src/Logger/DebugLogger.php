@@ -46,4 +46,12 @@ class DebugLogger implements Logger
 
         return $this->debugStatements[$index];
     }
+
+    /**
+     * @return void
+     */
+    public function reset() : void
+    {
+        $this->debugStatements = [];
+    }
 }
