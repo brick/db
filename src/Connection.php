@@ -30,6 +30,50 @@ class Connection
     }
 
     /**
+     * @todo support for platforms with a different syntax
+     *
+     * @param int $isolationLevel
+     *
+     * @return void
+     *
+     * @throws DbException
+     */
+    public function setTransactionIsolationLevel(int $isolationLevel) : void
+    {
+        $this->exec(
+            'SET TRANSACTION ISOLATION LEVEL ' .
+            $this->transactionIsolationLevelToString($isolationLevel)
+        );
+    }
+
+    /**
+     * @param int $isolationLevel
+     *
+     * @return string
+     *
+     * @throws DbException
+     */
+    private function transactionIsolationLevelToString(int $isolationLevel) : string
+    {
+        switch ($isolationLevel) {
+            case TransactionIsolationLevel::READ_UNCOMMITTED:
+                return 'READ UNCOMMITTED';
+
+            case TransactionIsolationLevel::READ_COMMITTED:
+                return 'READ COMMITTED';
+
+            case TransactionIsolationLevel::REPEATABLE_READ:
+                return 'REPEATABLE READ';
+
+            case TransactionIsolationLevel::SERIALIZABLE:
+                return 'SERIALIZABLE';
+
+            default:
+                throw new DbException('Invalid transaction isolation level.');
+        }
+    }
+
+    /**
      * @return void
      *
      * @throws DbException
