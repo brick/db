@@ -38,7 +38,7 @@ class Connection
      *
      * @throws DbException
      */
-    public function setTransactionIsolationLevel(int $isolationLevel) : void
+    private function setTransactionIsolationLevel(int $isolationLevel) : void
     {
         $this->exec(
             'SET TRANSACTION ISOLATION LEVEL ' .
@@ -74,12 +74,18 @@ class Connection
     }
 
     /**
+     * @param int $isolationLevel The minimum transaction isolation level, as a TransactionIsolationLevel constant.
+     *                            The actual isolation level might be higher, depending on the database platform.
+     *                            Defaults to READ_COMMITTED.
+     *
      * @return void
      *
      * @throws DbException
      */
-    public function beginTransaction() : void
+    public function beginTransaction(int $isolationLevel = TransactionIsolationLevel::READ_COMMITTED) : void
     {
+        $this->setTransactionIsolationLevel($isolationLevel);
+
         $this->logger->start('BEGIN TRANSACTION');
 
         try {
