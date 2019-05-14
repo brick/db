@@ -48,7 +48,13 @@ class DbException extends \Exception
         $message = $driverException->getMessage();
 
         if ($sqlStatement !== null) {
-            $message .= ' While executing: ' . $sqlStatement;
+            $message .= ' while executing: ' . $sqlStatement;
+
+            if ($parameters) {
+                $message .= ' with parameters [';
+                $message .= implode(', ', array_map([self::class, 'getParameterPreview'], $parameters));
+                $message .= ']';
+            }
         }
 
         $exception = new self($message, 0, $driverException);
@@ -60,6 +66,57 @@ class DbException extends \Exception
         $exception->errorCode = $driverException->getErrorCode();
 
         return $exception;
+    }
+
+    /**
+     * Returns a preview of the given parameter, to be included in the exception message.
+     *
+     * @param mixed $parameter
+     *
+     * @return string
+     */
+    private static function getParameterPreview($parameter) : string
+    {
+        if ($parameter === null) {
+            return 'null';
+        }
+
+        if (is_int($parameter) || is_float($parameter)) {
+            return (string) $parameter;
+        }
+
+        if (is_bool($parameter)) {
+            return $parameter ? 'true' : 'false';
+        }
+
+        if (is_string($parameter)) {
+            return self::getStringPreview($parameter);
+        }
+
+        return gettype($parameter);
+    }
+
+    /**
+     * @todo handle UTF-8 strings
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    private static function getStringPreview(string $string) : string
+    {
+        $maxLength = 20;
+
+        $result = substr($string, 0, $maxLength);
+        $result = preg_replace_callback('/[\x00-\x1F\x7F-\xFF]/', function(array $matches) : string {
+            return '\x' . str_pad(bin2hex($matches[0]), 2, '0', STR_PAD_LEFT);
+        }, $result);
+
+        if (strlen($string) > $maxLength) {
+            $result .= '...';
+        }
+
+        return "'$result'";
     }
 
     /**
