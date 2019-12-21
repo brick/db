@@ -56,16 +56,16 @@ class Connection
     private function transactionIsolationLevelToString(int $isolationLevel) : string
     {
         switch ($isolationLevel) {
-            case TransactionIsolationLevel::READ_UNCOMMITTED:
+            case IsolationLevel::READ_UNCOMMITTED:
                 return 'READ UNCOMMITTED';
 
-            case TransactionIsolationLevel::READ_COMMITTED:
+            case IsolationLevel::READ_COMMITTED:
                 return 'READ COMMITTED';
 
-            case TransactionIsolationLevel::REPEATABLE_READ:
+            case IsolationLevel::REPEATABLE_READ:
                 return 'REPEATABLE READ';
 
-            case TransactionIsolationLevel::SERIALIZABLE:
+            case IsolationLevel::SERIALIZABLE:
                 return 'SERIALIZABLE';
 
             default:
@@ -74,7 +74,7 @@ class Connection
     }
 
     /**
-     * @param int $isolationLevel The minimum transaction isolation level, as a TransactionIsolationLevel constant.
+     * @param int $isolationLevel The minimum transaction isolation level, as an IsolationLevel constant.
      *                            The actual isolation level might be higher, depending on the database platform.
      *                            Defaults to READ_COMMITTED.
      *
@@ -82,7 +82,7 @@ class Connection
      *
      * @throws DbException
      */
-    public function beginTransaction(int $isolationLevel = TransactionIsolationLevel::READ_COMMITTED) : void
+    public function beginTransaction(int $isolationLevel = IsolationLevel::READ_COMMITTED) : void
     {
         $this->setTransactionIsolationLevel($isolationLevel);
 

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Brick\Db;
 
-class TransactionIsolationLevel
+/**
+ * Transaction isolation level constants.
+ */
+class IsolationLevel
 {
     public const READ_UNCOMMITTED = 1;
 
