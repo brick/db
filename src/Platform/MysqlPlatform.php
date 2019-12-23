@@ -14,6 +14,9 @@ class MysqlPlatform extends Platform
     public function getExceptionClass(DriverException $e): string
     {
         switch ($e->getErrorCode()) {
+            case 1036: // ER_OPEN_AS_READONLY
+                return Exception\ReadOnlyException::class;
+
             case 1205: // ER_LOCK_WAIT_TIMEOUT
                 return Exception\LockWaitTimeoutException::class;
 
