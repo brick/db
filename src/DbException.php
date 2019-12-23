@@ -57,7 +57,7 @@ class DbException extends \Exception
             }
         }
 
-        $exception = new self($message, 0, $driverException);
+        $exception = new static($message, 0, $driverException);
 
         $exception->sqlStatement = $sqlStatement;
         $exception->parameters   = $parameters;

@@ -22,11 +22,12 @@ class PreparedStatement extends Statement
     /**
      * @param Driver\PreparedStatement $driverStatement
      * @param string                   $sqlStatement
+     * @param Platform                 $platform
      * @param TimerLogger              $logger
      */
-    public function __construct(Driver\PreparedStatement $driverStatement, string $sqlStatement, TimerLogger $logger)
+    public function __construct(Driver\PreparedStatement $driverStatement, string $sqlStatement, Platform $platform, TimerLogger $logger)
     {
-        parent::__construct($driverStatement, $sqlStatement);
+        parent::__construct($driverStatement, $sqlStatement, $platform);
 
         $this->driverPreparedStatement = $driverStatement;
         $this->logger                  = $logger;
@@ -66,7 +67,7 @@ class PreparedStatement extends Statement
         try {
             $this->driverPreparedStatement->execute($parameters);
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e, $this->sqlStatement, $parameters);
+            throw $this->platform->convertException($e, $this->sqlStatement, $parameters);
         } finally {
             $this->logger->stop();
         }

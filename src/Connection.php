@@ -15,17 +15,24 @@ class Connection
     protected $driverConnection;
 
     /**
+     * @var Platform
+     */
+    protected $platform;
+
+    /**
      * @var TimerLogger
      */
     protected $logger;
 
     /**
      * @param Driver\Connection $driverConnection
+     * @param Platform          $platform
      * @param Logger|null       $logger
      */
-    public function __construct(Driver\Connection $driverConnection, ?Logger $logger = null)
+    public function __construct(Driver\Connection $driverConnection, Platform $platform, ?Logger $logger = null)
     {
         $this->driverConnection = $driverConnection;
+        $this->platform         = $platform;
         $this->logger           = new TimerLogger($logger);
     }
 
@@ -91,7 +98,7 @@ class Connection
         try {
             $this->driverConnection->beginTransaction();
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e);
+            throw $this->platform->convertException($e);
         } finally {
             $this->logger->stop();
         }
@@ -109,7 +116,7 @@ class Connection
         try {
             $this->driverConnection->commit();
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e);
+            throw $this->platform->convertException($e);
         } finally {
             $this->logger->stop();
         }
@@ -127,7 +134,7 @@ class Connection
         try {
             $this->driverConnection->rollBack();
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e);
+            throw $this->platform->convertException($e);
         } finally {
             $this->logger->stop();
         }
@@ -145,10 +152,10 @@ class Connection
         try {
             $driverStatement = $this->driverConnection->prepare($statement);
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e, $statement);
+            throw $this->platform->convertException($e, $statement);
         }
 
-        return new PreparedStatement($driverStatement, $statement, $this->logger);
+        return new PreparedStatement($driverStatement, $statement, $this->platform, $this->logger);
     }
 
     /**
@@ -173,12 +180,12 @@ class Connection
         try {
             $driverStatement = $this->driverConnection->query($statement);
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e, $statement);
+            throw $this->platform->convertException($e, $statement);
         } finally {
             $this->logger->stop();
         }
 
-        return new Statement($driverStatement, $statement);
+        return new Statement($driverStatement, $statement, $this->platform);
     }
 
     /**
@@ -195,7 +202,7 @@ class Connection
         try {
             return $this->driverConnection->exec($statement);
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e, $statement);
+            throw $this->platform->convertException($e, $statement);
         } finally {
             $this->logger->stop();
         }
@@ -213,7 +220,7 @@ class Connection
         try {
             return $this->driverConnection->lastInsertId($name);
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e);
+            throw $this->platform->convertException($e);
         }
     }
 }

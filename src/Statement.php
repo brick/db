@@ -19,13 +19,20 @@ class Statement
     protected $sqlStatement;
 
     /**
+     * @var Platform
+     */
+    protected $platform;
+
+    /**
      * @param Driver\Statement $driverStatement
      * @param string           $sqlStatement
+     * @param Platform         $platform
      */
-    public function __construct(Driver\Statement $driverStatement, string $sqlStatement)
+    public function __construct(Driver\Statement $driverStatement, string $sqlStatement, Platform $platform)
     {
         $this->driverStatement = $driverStatement;
         $this->sqlStatement    = $sqlStatement;
+        $this->platform        = $platform;
     }
 
     /**
@@ -42,7 +49,7 @@ class Statement
         try {
             return $this->driverStatement->fetch($assoc);
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e, $this->sqlStatement);
+            throw $this->platform->convertException($e, $this->sqlStatement);
         }
     }
 
@@ -64,7 +71,7 @@ class Statement
         try {
             return $this->driverStatement->fetchAll($assoc);
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e, $this->sqlStatement);
+            throw $this->platform->convertException($e, $this->sqlStatement);
         }
     }
 
@@ -85,7 +92,7 @@ class Statement
         try {
             return $this->driverStatement->rowCount();
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e, $this->sqlStatement);
+            throw $this->platform->convertException($e, $this->sqlStatement);
         }
     }
 
@@ -107,7 +114,7 @@ class Statement
         try {
             return $this->driverStatement->nextRowset();
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e, $this->sqlStatement);
+            throw $this->platform->convertException($e, $this->sqlStatement);
         }
     }
 
@@ -132,7 +139,7 @@ class Statement
         try {
             $this->driverStatement->closeCursor();
         } catch (Driver\DriverException $e) {
-            throw DbException::fromDriverException($e, $this->sqlStatement);
+            throw $this->platform->convertException($e, $this->sqlStatement);
         }
     }
 }
