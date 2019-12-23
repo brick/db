@@ -30,7 +30,7 @@ class DriverException extends \Exception
      * @param string|int|null $errorCode The driver-specific error code, or null if not available.
      * @param Throwable|null  $previous  The previous exception, if any.
      */
-    public function __construct(string $message, ?string $sqlState = null, $errorCode = null, ?\Throwable $previous = null)
+    public function __construct(string $message, ?string $sqlState = null, $errorCode = null, ?Throwable $previous = null)
     {
         parent::__construct($message, 0, $previous);
 
