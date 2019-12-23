@@ -21,6 +21,9 @@ class SqlitePlatform extends Platform
                 return Exception\LockWaitTimeoutException::class;
 
             case 19: // SQLITE_CONSTRAINT
+                if ($this->startsWith($message, 'NOT NULL constraint failed')) {
+                    return Exception\NotNullConstraintViolationException::class;
+                }
                 if ($this->startsWith($message, 'UNIQUE constraint failed')) {
                     return Exception\UniqueConstraintViolationException::class;
                 }

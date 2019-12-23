@@ -34,6 +34,15 @@ class MysqlPlatform extends Platform
             case 1701: // ER_TRUNCATE_ILLEGAL_FK
                 return Exception\ForeignKeyConstraintViolationException::class;
 
+            case 1048: // ER_BAD_NULL_ERROR
+            case 1121: // ER_NULL_COLUMN_IN_INDEX
+            case 1138: // ER_INVALID_USE_OF_NULL
+            case 1171: // ER_PRIMARY_CANT_HAVE_NULL
+            case 1252: // ER_SPATIAL_CANT_HAVE_NULL
+            case 1263: // ER_WARN_NULL_TO_NOTNULL
+            case 1566: // ER_NULL_IN_VALUES_LESS_THAN
+                return Exception\NotNullConstraintViolationException::class;
+
             default:
                 return DbException::class;
         }
