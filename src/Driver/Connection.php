@@ -4,8 +4,15 @@ declare(strict_types=1);
 
 namespace Brick\Db\Driver;
 
+use Brick\Db\Platform;
+
 interface Connection
 {
+    /**
+     * @return Platform|null The platform, or null if it cannot be detected.
+     */
+    public function getPlatform() : ?Platform;
+
     /**
      * @return void
      *

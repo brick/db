@@ -8,6 +8,7 @@ use Brick\Db\Driver\Connection;
 use Brick\Db\Driver\DriverException;
 use Brick\Db\Driver\PreparedStatement;
 use Brick\Db\Driver\Statement;
+use Brick\Db\Platform;
 
 class PDOConnection implements Connection
 {
@@ -26,6 +27,18 @@ class PDOConnection implements Connection
     public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
+    }
+
+    public function getPlatform() : ?Platform
+    {
+        $name = $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
+
+        switch ($name) {
+            case 'mysql':
+                return new Platform\MysqlPlatform();
+        }
+
+        return null;
     }
 
     /**

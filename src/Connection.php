@@ -25,12 +25,22 @@ class Connection
     protected $logger;
 
     /**
-     * @param Driver\Connection $driverConnection
-     * @param Platform          $platform
-     * @param Logger|null       $logger
+     * @param Driver\Connection $driverConnection The driver connection.
+     * @param Logger|null       $logger           An optional logger.
+     * @param Platform|null     $platform         The database platform, or null to auto-detect.
+     *
+     * @throws DbException
      */
-    public function __construct(Driver\Connection $driverConnection, Platform $platform, ?Logger $logger = null)
+    public function __construct(Driver\Connection $driverConnection, ?Logger $logger = null, ?Platform $platform = null)
     {
+        if ($platform === null) {
+            $platform = $driverConnection->getPlatform();
+
+            if ($platform === null) {
+                throw new DbException('Cannot detect platform, or platform not supported.');
+            }
+        }
+
         $this->driverConnection = $driverConnection;
         $this->platform         = $platform;
         $this->logger           = new TimerLogger($logger);
