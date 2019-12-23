@@ -22,13 +22,13 @@ class SqlitePlatform extends Platform
 
             case 19: // SQLITE_CONSTRAINT
                 if ($this->startsWith($message, 'NOT NULL constraint failed')) {
-                    return Exception\NotNullConstraintViolationException::class;
+                    return Exception\ConstraintViolationException\NotNullConstraintViolationException::class;
                 }
                 if ($this->startsWith($message, 'UNIQUE constraint failed')) {
-                    return Exception\UniqueConstraintViolationException::class;
+                    return Exception\ConstraintViolationException\UniqueConstraintViolationException::class;
                 }
                 if ($this->startsWith($message, 'FOREIGN KEY constraint failed')) {
-                    return Exception\ForeignKeyConstraintViolationException::class;
+                    return Exception\ConstraintViolationException\ForeignKeyConstraintViolationException::class;
                 }
                 break;
         }
