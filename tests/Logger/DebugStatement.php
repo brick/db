@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Brick\Db\Logger;
+namespace Brick\Db\Tests\Logger;
 
 class DebugStatement
 {

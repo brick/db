@@ -4,8 +4,8 @@ namespace Brick\Db\Tests;
 
 use Brick\Db\Connection;
 use Brick\Db\Driver\PDO\PDOConnection;
-use Brick\Db\Logger\DebugLogger;
-use Brick\Db\Logger\DebugStatement;
+use Brick\Db\Tests\Logger\DebugLogger;
+use Brick\Db\Tests\Logger\DebugStatement;
 use PHPUnit\Framework\TestCase;
 
 class ConnectionTest extends TestCase
