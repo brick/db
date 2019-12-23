@@ -6,6 +6,9 @@ namespace Brick\Db\Internal;
 
 use Brick\Db\Logger;
 
+/**
+ * @internal
+ */
 class TimerLogger
 {
     /**
