@@ -24,6 +24,13 @@ class MysqlPlatform extends Platform
             case 1169: // ER_DUP_UNIQUE
                 return Exception\UniqueConstraintViolationException::class;
 
+            case 1216: // ER_NO_REFERENCED_ROW
+            case 1217: // ER_ROW_IS_REFERENCED
+            case 1451: // ER_ROW_IS_REFERENCED_2
+            case 1452: // ER_NO_REFERENCED_ROW_2
+            case 1701: // ER_TRUNCATE_ILLEGAL_FK
+                return Exception\ForeignKeyConstraintViolationException::class;
+
             default:
                 return DbException::class;
         }
