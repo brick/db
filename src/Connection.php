@@ -225,7 +225,7 @@ class Connection
      *
      * @throws DbException
      */
-    public function lastInsertId(string $name = null) : int
+    public function lastInsertId(?string $name = null) : int
     {
         try {
             return $this->driverConnection->lastInsertId($name);

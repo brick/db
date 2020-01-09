@@ -146,7 +146,7 @@ class PDOConnection implements Connection
     /**
      * @inheritdoc
      */
-    public function lastInsertId(string $name = null) : int
+    public function lastInsertId(?string $name = null) : int
     {
         $lastInsertId = @ $this->pdo->lastInsertId($name);
 

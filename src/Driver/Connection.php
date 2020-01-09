@@ -68,5 +68,5 @@ interface Connection
      *
      * @throws DriverException
      */
-    public function lastInsertId(string $name = null) : int;
+    public function lastInsertId(?string $name = null) : int;
 }
