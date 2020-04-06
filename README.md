@@ -45,7 +45,7 @@ INSERT INTO user (id, name, age) VALUES (3, 'Alice', 24);
 with a single, faster query:
 
 ```sql
-INSERT INTO user (id, name age) VALUES (1, 'Bob', 20), (2, 'John', 22), (3, 'Alice', 24);
+INSERT INTO user (id, name, age) VALUES (1, 'Bob', 20), (2, 'John', 22), (3, 'Alice', 24);
 ```
 
 To use it, create a `BulkInserter` instance with:
