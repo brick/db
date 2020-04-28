@@ -50,34 +50,28 @@ abstract class DriverTest extends TestCase
      */
     abstract protected function killConnection() : void;
 
-    public function testBeginTransactionFailure()
-    {
-        if (! $this->supportsKillConnection()) {
-            self::markTestSkipped();
-        }
-
-        $this->killConnection();
-        $this->expectException(DriverException::class);
-        $this->connection->beginTransaction();
-    }
-
-    public function testCommitFailure()
-    {
-        if (! $this->supportsKillConnection()) {
-            self::markTestSkipped();
-        }
-
-        $this->connection->beginTransaction();
-        $this->killConnection();
-        $this->expectException(DriverException::class);
-        $this->connection->commit();
-    }
-
-    public function testRollBackNonExistingTransaction()
-    {
-        $this->expectException(DriverException::class);
-        $this->connection->rollBack();
-    }
+//    public function testBeginTransactionFailure()
+//    {
+//        if (! $this->supportsKillConnection()) {
+//            self::markTestSkipped();
+//        }
+//
+//        $this->killConnection();
+//        $this->expectException(DriverException::class);
+//        $this->connection->beginTransaction();
+//    }
+//
+//    public function testCommitFailure()
+//    {
+//        if (! $this->supportsKillConnection()) {
+//            self::markTestSkipped();
+//        }
+//
+//        $this->connection->beginTransaction();
+//        $this->killConnection();
+//        $this->expectException(DriverException::class);
+//        $this->connection->commit();
+//    }
 
     /**
      * @expectedException \Brick\Db\Driver\DriverException

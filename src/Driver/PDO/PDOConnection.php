@@ -44,54 +44,6 @@ class PDOConnection implements Connection
     /**
      * @inheritdoc
      */
-    public function beginTransaction() : void
-    {
-        try {
-            $result = @ $this->pdo->beginTransaction();
-        } catch (\PDOException $e) {
-            throw self::exceptionFromPDOException($e);
-        }
-
-        if ($result === false) {
-            throw self::exceptionFromPDO($this->pdo);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function commit() : void
-    {
-        try {
-            $result = @ $this->pdo->commit();
-        } catch (\PDOException $e) {
-            throw self::exceptionFromPDOException($e);
-        }
-
-        if ($result === false) {
-            throw self::exceptionFromPDO($this->pdo);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rollBack() : void
-    {
-        try {
-            $result = @ $this->pdo->rollBack();
-        } catch (\PDOException $e) {
-            throw self::exceptionFromPDOException($e);
-        }
-
-        if ($result === false) {
-            throw self::exceptionFromPDO($this->pdo);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function prepare(string $statement) : PreparedStatement
     {
         try {

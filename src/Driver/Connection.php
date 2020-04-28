@@ -14,27 +14,6 @@ interface Connection
     public function getPlatform() : ?Platform;
 
     /**
-     * @return void
-     *
-     * @throws DriverException
-     */
-    public function beginTransaction() : void;
-
-    /**
-     * @return void
-     *
-     * @throws DriverException
-     */
-    public function commit() : void;
-
-    /**
-     * @return void
-     *
-     * @throws DriverException
-     */
-    public function rollBack() : void;
-
-    /**
      * @param string $statement
      *
      * @return PreparedStatement

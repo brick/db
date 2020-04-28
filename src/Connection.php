@@ -20,6 +20,11 @@ class Connection
     protected $platform;
 
     /**
+     * @var TransactionManager
+     */
+    protected $transactionManager;
+
+    /**
      * @var TimerLogger
      */
     protected $logger;
@@ -41,9 +46,10 @@ class Connection
             }
         }
 
-        $this->driverConnection = $driverConnection;
-        $this->platform         = $platform;
-        $this->logger           = new TimerLogger($logger);
+        $this->driverConnection   = $driverConnection;
+        $this->platform           = $platform;
+        $this->transactionManager = new TransactionManager($this);
+        $this->logger             = new TimerLogger($logger);
     }
 
     /**
@@ -95,59 +101,15 @@ class Connection
      *                            The actual isolation level might be higher, depending on the database platform.
      *                            Defaults to READ_COMMITTED.
      *
-     * @return void
+     * @return Transaction
      *
      * @throws DbException
      */
-    public function beginTransaction(int $isolationLevel = IsolationLevel::READ_COMMITTED) : void
+    public function beginTransaction(int $isolationLevel = IsolationLevel::READ_COMMITTED) : Transaction
     {
         $this->setTransactionIsolationLevel($isolationLevel);
 
-        $this->logger->start('BEGIN TRANSACTION');
-
-        try {
-            $this->driverConnection->beginTransaction();
-        } catch (Driver\DriverException $e) {
-            throw $this->platform->convertException($e);
-        } finally {
-            $this->logger->stop();
-        }
-    }
-
-    /**
-     * @return void
-     *
-     * @throws DbException
-     */
-    public function commit() : void
-    {
-        $this->logger->start('COMMIT');
-
-        try {
-            $this->driverConnection->commit();
-        } catch (Driver\DriverException $e) {
-            throw $this->platform->convertException($e);
-        } finally {
-            $this->logger->stop();
-        }
-    }
-
-    /**
-     * @return void
-     *
-     * @throws DbException
-     */
-    public function rollBack() : void
-    {
-        $this->logger->start('ROLLBACK');
-
-        try {
-            $this->driverConnection->rollBack();
-        } catch (Driver\DriverException $e) {
-            throw $this->platform->convertException($e);
-        } finally {
-            $this->logger->stop();
-        }
+        return $this->transactionManager->begin();
     }
 
     /**
