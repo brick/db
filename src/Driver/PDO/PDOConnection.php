@@ -29,7 +29,7 @@ class PDOConnection implements Connection
         $this->pdo = $pdo;
     }
 
-    public function getPlatform() : ?Platform
+    public function detectPlatform() : ?Platform
     {
         $name = $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 

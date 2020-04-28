@@ -39,7 +39,7 @@ class Connection
     public function __construct(Driver\Connection $driverConnection, ?Logger $logger = null, ?Platform $platform = null)
     {
         if ($platform === null) {
-            $platform = $driverConnection->getPlatform();
+            $platform = $driverConnection->detectPlatform();
 
             if ($platform === null) {
                 throw new DbException('Cannot detect platform, or platform not supported.');

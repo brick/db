@@ -11,7 +11,7 @@ interface Connection
     /**
      * @return Platform|null The platform, or null if it cannot be detected.
      */
-    public function getPlatform() : ?Platform;
+    public function detectPlatform() : ?Platform;
 
     /**
      * @param string $statement
