@@ -84,14 +84,15 @@ class TransactionManager
             throw new DbException('Transaction cannot be committed: a nested transaction is still active.');
         }
 
+        $this->isErrored = true;
+
         if ($this->nestingLevel === 1) {
-            $statement = 'COMMIT';
+            $this->connection->exec('COMMIT');
         } else {
-            $statement = 'RELEASE SAVEPOINT ' . self::SAVEPOINT_PREFIX . ($this->nestingLevel - 1);
+            $savepoint = self::SAVEPOINT_PREFIX . ($this->nestingLevel - 1);
+            $this->connection->exec('RELEASE SAVEPOINT ' . $savepoint);
         }
 
-        $this->isErrored = true;
-        $this->connection->exec($statement);
         $this->isErrored = false;
 
         $this->nestingLevel--;
@@ -117,14 +118,16 @@ class TransactionManager
             throw new DbException('Transaction cannot be rolled back: a nested transaction is still active.');
         }
 
+        $this->isErrored = true;
+
         if ($this->nestingLevel === 1) {
-            $statement = 'ROLLBACK';
+            $this->connection->exec('ROLLBACK');
         } else {
-            $statement = 'ROLLBACK TO SAVEPOINT ' . self::SAVEPOINT_PREFIX . ($this->nestingLevel - 1);
+            $savepoint = self::SAVEPOINT_PREFIX . ($this->nestingLevel - 1);
+            $this->connection->exec('ROLLBACK TO SAVEPOINT ' . $savepoint);
+            $this->connection->exec('RELEASE SAVEPOINT ' . $savepoint);
         }
 
-        $this->isErrored = true;
-        $this->connection->exec($statement);
         $this->isErrored = false;
 
         $this->nestingLevel--;
