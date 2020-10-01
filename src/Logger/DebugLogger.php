@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Brick\Db\Tests\Logger;
+namespace Brick\Db\Logger;
 
 use Brick\Db\Logger;
 
