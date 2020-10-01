@@ -36,6 +36,9 @@ class PDOConnection implements Connection
         switch ($name) {
             case 'mysql':
                 return new Platform\MysqlPlatform();
+
+            case 'sqlite':
+                return new Platform\SqlitePlatform();
         }
 
         return null;
