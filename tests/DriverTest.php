@@ -14,10 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class DriverTest extends TestCase
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private Connection $connection;
 
     /**
      * @inheritdoc
@@ -73,7 +70,7 @@ abstract class DriverTest extends TestCase
 //        $this->connection->commit();
 //    }
 
-    public function testInvalidQueryThrowsException()
+    public function testInvalidQueryThrowsException() : void
     {
         $this->expectException(DriverException::class);
         $this->connection->query('SELECT 1 FROM unknown_table');

@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class BulkDeleterTest extends TestCase
 {
-    public function testBulkDelete()
+    public function testBulkDelete() : void
     {
         $pdo = new PDOMock([3, 4, 2]);
         $deleter = new BulkDeleter($pdo, 'transaction', ['store_id', 'transaction_number'], 3);

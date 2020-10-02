@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class BulkInserterTest extends TestCase
 {
-    public function testValidateConstructorBatchSize()
+    public function testValidateConstructorBatchSize() : void
     {
         $pdo = new PDOMock();
 
@@ -23,7 +23,7 @@ class BulkInserterTest extends TestCase
         new BulkInserter($pdo, 'table', ['id'], 0);
     }
 
-    public function testValidateConstructorFieldCount()
+    public function testValidateConstructorFieldCount() : void
     {
         $pdo = new PDOMock();
 
@@ -33,7 +33,7 @@ class BulkInserterTest extends TestCase
         new BulkInserter($pdo, 'table', []);
     }
 
-    public function testValidateQueueFieldCount()
+    public function testValidateQueueFieldCount() : void
     {
         $pdo = new PDOMock();
         $inserter = new BulkInserter($pdo, 'table', ['id', 'name']);
@@ -42,7 +42,7 @@ class BulkInserterTest extends TestCase
         $inserter->queue(1);
     }
 
-    public function testBulkInsert()
+    public function testBulkInsert() : void
     {
         $pdo = new PDOMock([3, 3, 1]);
 
@@ -98,7 +98,7 @@ class BulkInserterTest extends TestCase
         $this->assertSame($expectedLog, $pdo->getLog());
     }
 
-    public function testReset()
+    public function testReset() : void
     {
         $pdo = new PDOMock([2]);
         $inserter = new BulkInserter($pdo, 'user', ['id', 'name'], 2);

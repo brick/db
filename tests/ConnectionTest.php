@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class ConnectionTest extends TestCase
 {
-    public function testLogging()
+    public function testLogging() : void
     {
         $pdo = new \PDO('sqlite::memory:');
         $pdoConnection = new PDOConnection($pdo);

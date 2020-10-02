@@ -9,15 +9,9 @@ namespace Brick\Db\Tests\Bulk;
  */
 class PDOStatementMock extends \PDOStatement
 {
-    /**
-     * @var PDOMock
-     */
-    private $pdo;
+    private PDOMock $pdo;
 
-    /**
-     * @var int
-     */
-    private $number;
+    private int $number;
 
     /**
      * @param PDOMock $pdo
