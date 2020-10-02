@@ -23,7 +23,6 @@ abstract class Platform
      */
     public function convertException(DriverException $e, ?string $sqlStatement = null, ?array $parameters = null) : DbException
     {
-        /** @var DbException $exceptionClass CAUTION: THIS IS A CLASS NAME, NOT AN OBJECT, BUT WE PLEASE THE IDE */
         $exceptionClass = $this->getExceptionClass($e);
 
         if (! is_a($exceptionClass, DbException::class, true)) {
