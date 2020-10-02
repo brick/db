@@ -3,17 +3,20 @@ sudo: false
 dist: trusty
 
 php:
-  - 7.1
-  - 7.2
-  - 7.3
-  - 7.4
+  - nightly
 
 before_script:
-  - composer install
+  - |
+    # not all dependencies advertise PHP 8 support yet
+    composer config platform.php 7.4.0
+  - composer install --ignore-platform-reqs
 
 script:
   - mkdir -p build/logs
   - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
-after_script:
-  - vendor/bin/php-coveralls -v
+# php-coveralls does not support PHP 8 yet:
+# https://github.com/php-coveralls/php-coveralls/issues/281
+
+#after_script:
+#  - vendor/bin/php-coveralls -v

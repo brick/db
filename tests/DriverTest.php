@@ -22,7 +22,7 @@ abstract class DriverTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->connection = $this->getConnection();
     }
@@ -73,11 +73,9 @@ abstract class DriverTest extends TestCase
 //        $this->connection->commit();
 //    }
 
-    /**
-     * @expectedException \Brick\Db\Driver\DriverException
-     */
     public function testInvalidQueryThrowsException()
     {
+        $this->expectException(DriverException::class);
         $this->connection->query('SELECT 1 FROM unknown_table');
     }
 }

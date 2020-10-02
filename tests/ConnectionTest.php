@@ -52,7 +52,7 @@ class ConnectionTest extends TestCase
     {
         $this->assertSame($statement, $debugStatement->getStatement());
         $this->assertSame($parameters, $debugStatement->getParameters());
-        $this->assertInternalType('float', $debugStatement->getTime());
+        $this->assertIsFloat($debugStatement->getTime());
         $this->assertGreaterThan(0.0, $debugStatement->getTime());
     }
 }
