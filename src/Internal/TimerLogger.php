@@ -11,30 +11,15 @@ use Brick\Db\Logger;
  */
 class TimerLogger
 {
-    /**
-     * @var Logger|null
-     */
-    private $logger;
+    private Logger|null $logger;
 
-    /**
-     * @var string|null
-     */
-    private $statement;
+    private string|null $statement;
 
-    /**
-     * @var array|null
-     */
-    private $parameters;
+    private array|null $parameters;
 
-    /**
-     * @var float|null
-     */
-    private $startTime;
+    private float|null $startTime;
 
-    /**
-     * @param Logger|null $logger
-     */
-    public function __construct(?Logger $logger)
+    public function __construct(Logger|null $logger)
     {
         $this->logger = $logger;
     }

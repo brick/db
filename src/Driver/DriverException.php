@@ -10,17 +10,13 @@ class DriverException extends \Exception
 {
     /**
      * The five characters SQLSTATE error code, or null if not available.
-     *
-     * @var string|null
      */
-    private $sqlState;
+    private string|null $sqlState;
 
     /**
      * The driver-specific error code, or null if not available.
-     *
-     * @var string|int|null
      */
-    private $errorCode;
+    private string|int|null $errorCode;
 
     /**
      * DbException constructor.
@@ -30,7 +26,7 @@ class DriverException extends \Exception
      * @param string|int|null $errorCode The driver-specific error code, or null if not available.
      * @param Throwable|null  $previous  The previous exception, if any.
      */
-    public function __construct(string $message, ?string $sqlState = null, $errorCode = null, ?Throwable $previous = null)
+    public function __construct(string $message, string|null $sqlState = null, string|int|null $errorCode = null, Throwable|null $previous = null)
     {
         parent::__construct($message, 0, $previous);
 
@@ -43,17 +39,15 @@ class DriverException extends \Exception
      *
      * @return string|null
      */
-    public function getSQLState() : ?string
+    public function getSQLState() : string|null
     {
         return $this->sqlState;
     }
 
     /**
      * Returns the driver-specific error code, or null if not available.
-     *
-     * @return string|int|null
      */
-    public function getErrorCode()
+    public function getErrorCode() : string|int|null
     {
         return $this->errorCode;
     }

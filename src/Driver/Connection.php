@@ -11,7 +11,7 @@ interface Connection
     /**
      * @return Platform|null The platform, or null if it cannot be detected.
      */
-    public function detectPlatform() : ?Platform;
+    public function detectPlatform() : Platform|null;
 
     /**
      * @param string $statement
@@ -47,5 +47,5 @@ interface Connection
      *
      * @throws DriverException
      */
-    public function lastInsertId(?string $name = null) : int;
+    public function lastInsertId(string|null $name = null) : int;
 }

@@ -21,7 +21,7 @@ abstract class Platform
      *
      * @return DbException
      */
-    public function convertException(DriverException $e, ?string $sqlStatement = null, ?array $parameters = null) : DbException
+    public function convertException(DriverException $e, string|null $sqlStatement = null, array|null $parameters = null) : DbException
     {
         $exceptionClass = $this->getExceptionClass($e);
 

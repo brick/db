@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Brick\Db\Bulk;
 
+use InvalidArgumentException;
+use PDO;
+use PDOStatement;
+
 /**
  * Base class for BulkInserter and BulkDeleter.
  */
@@ -11,94 +15,76 @@ abstract class BulkOperator
 {
     /**
      * The PDO connection.
-     *
-     * @var \PDO
      */
-    private $pdo;
+    private PDO $pdo;
 
     /**
      * The name of the target database table.
-     *
-     * @var string
      */
-    protected $table;
+    protected string $table;
 
     /**
      * The name of the fields to process.
      *
-     * @var array
+     * @var string[]
      */
-    protected $fields;
+    protected array $fields;
 
     /**
      * The number of fields above. This is to avoid redundant count() calls.
-     *
-     * @var int
      */
-    protected $numFields;
+    protected int $numFields;
 
     /**
      * The number of records to process per query.
-     *
-     * @var int
      */
-    private $operationsPerQuery;
+    private int $operationsPerQuery;
 
     /**
      * The prepared statement to process a full batch of records.
-     *
-     * @var \PDOStatement
      */
-    private $preparedStatement;
+    private PDOStatement $preparedStatement;
 
     /**
      * A buffer containing the pending values to process in the next batch.
-     *
-     * @var array
      */
-    private $buffer = [];
+    private array $buffer = [];
 
     /**
      * The number of operations in the buffer.
-     *
-     * @var int
      */
-    private $bufferSize = 0;
+    private int $bufferSize = 0;
 
     /**
      * The total number of operations that have been queued.
      *
      * This includes both flushed and pending operations.
-     *
-     * @var int
      */
-    private $totalOperations = 0;
+    private int $totalOperations = 0;
 
     /**
      * The total number of rows affected by flushed operations.
-     *
-     * @var int
      */
-    private $affectedRows = 0;
+    private int $affectedRows = 0;
 
     /**
-     * @param \PDO   $pdo                   The PDO connection.
-     * @param string $table                 The name of the table.
-     * @param array  $fields                The name of the relevant fields.
-     * @param int    $operationsPerQuery    The number of operations to process in a single query.
+     * @param PDO      $pdo                The PDO connection.
+     * @param string   $table              The name of the table.
+     * @param string[] $fields             The name of the relevant fields.
+     * @param int      $operationsPerQuery The number of operations to process in a single query.
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    public function __construct(\PDO $pdo, string $table, array $fields, int $operationsPerQuery = 100)
+    public function __construct(PDO $pdo, string $table, array $fields, int $operationsPerQuery = 100)
     {
         if ($operationsPerQuery < 1) {
-            throw new \InvalidArgumentException('The number of operations per query must be 1 or more.');
+            throw new InvalidArgumentException('The number of operations per query must be 1 or more.');
         }
 
         $numFields = count($fields);
 
         if ($numFields === 0) {
-            throw new \InvalidArgumentException('The field list is empty.');
+            throw new InvalidArgumentException('The field list is empty.');
         }
 
         $this->pdo       = $pdo;
@@ -120,7 +106,7 @@ abstract class BulkOperator
      * @return bool Whether a batch has been synchronized with the database.
      *              This can be used to display progress feedback.
      *
-     * @throws \InvalidArgumentException If the number of values does not match the field count.
+     * @throws InvalidArgumentException If the number of values does not match the field count.
      */
     public function queue(mixed ...$values) : bool
     {

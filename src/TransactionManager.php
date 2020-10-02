@@ -11,24 +11,17 @@ class TransactionManager
 {
     private const SAVEPOINT_PREFIX = 'BRICK_DB_SAVEPOINT_';
 
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private Connection $connection;
 
     /**
      * The current transaction nesting level. When no transaction is active, this value is zero.
-     *
-     * @var int
      */
-    private $nestingLevel = 0;
+    private int $nestingLevel = 0;
 
     /**
      * Whether a transaction management statement has failed, in which case the transaction is in an unknown state.
-     *
-     * @var bool
      */
-    private $isErrored = false;
+    private bool $isErrored = false;
 
     /**
      * TransactionManager constructor.

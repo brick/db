@@ -6,20 +6,11 @@ namespace Brick\Db\Logger;
 
 class DebugStatement
 {
-    /**
-     * @var string
-     */
-    private $statement;
+    private string $statement;
 
-    /**
-     * @var array
-     */
-    private $parameters;
+    private array $parameters;
 
-    /**
-     * @var float
-     */
-    private $time;
+    private float $time;
 
     /**
      * @param string $statement

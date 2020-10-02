@@ -6,15 +6,19 @@ namespace Brick\Db;
 
 class Transaction
 {
-    /**
-     * @var TransactionManager
-     */
-    private $transactionManager;
+    private TransactionManager $transactionManager;
+
+    private int $nestingLevel;
 
     /**
-     * @var int
+     * @var bool
      */
-    private $nestingLevel;
+    private bool $isCommitted = false;
+
+    /**
+     * @var bool
+     */
+    private bool $isRolledBack = false;
 
     /**
      * Transaction constructor.
@@ -27,16 +31,6 @@ class Transaction
         $this->transactionManager = $transactionManager;
         $this->nestingLevel       = $nestingLevel;
     }
-
-    /**
-     * @var bool
-     */
-    private $isCommitted = false;
-
-    /**
-     * @var bool
-     */
-    private $isRolledBack = false;
 
     /**
      * @return void

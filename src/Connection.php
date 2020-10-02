@@ -9,25 +9,13 @@ use Brick\Db\Internal\TimerLogger;
 
 class Connection
 {
-    /**
-     * @var Driver\Connection
-     */
-    protected $driverConnection;
+    protected Driver\Connection $driverConnection;
 
-    /**
-     * @var Platform
-     */
-    protected $platform;
+    protected Platform $platform;
 
-    /**
-     * @var TransactionManager
-     */
-    protected $transactionManager;
+    protected TransactionManager $transactionManager;
 
-    /**
-     * @var TimerLogger
-     */
-    protected $logger;
+    protected TimerLogger $logger;
 
     /**
      * @param Driver\Connection $driverConnection The driver connection.
@@ -36,7 +24,7 @@ class Connection
      *
      * @throws DbException
      */
-    public function __construct(Driver\Connection $driverConnection, ?Logger $logger = null, ?Platform $platform = null)
+    public function __construct(Driver\Connection $driverConnection, Logger|null $logger = null, Platform|null $platform = null)
     {
         if ($platform === null) {
             $platform = $driverConnection->detectPlatform();

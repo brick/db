@@ -11,7 +11,7 @@ class DebugLogger implements Logger
     /**
      * @var DebugStatement[]
      */
-    private $debugStatements = [];
+    private array $debugStatements = [];
 
     /**
      * {@inheritdoc}

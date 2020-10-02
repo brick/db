@@ -8,20 +8,11 @@ use Brick\Db\Driver;
 
 class Statement
 {
-    /**
-     * @var Driver\Statement
-     */
-    protected $driverStatement;
+    protected Driver\Statement $driverStatement;
 
-    /**
-     * @var string
-     */
-    protected $sqlStatement;
+    protected string $sqlStatement;
 
-    /**
-     * @var Platform
-     */
-    protected $platform;
+    protected Platform $platform;
 
     /**
      * @param Driver\Statement $driverStatement
@@ -44,7 +35,7 @@ class Statement
      *
      * @throws DbException If an error occurs.
      */
-    public function fetch(bool $assoc = false) : ?array
+    public function fetch(bool $assoc = false) : array|null
     {
         try {
             return $this->driverStatement->fetch($assoc);

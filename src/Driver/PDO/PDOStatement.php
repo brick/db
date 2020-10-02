@@ -10,10 +10,8 @@ class PDOStatement implements Statement
 {
     /**
      * The wrapped PDO statement.
-     *
-     * @var \PDOStatement
      */
-    protected $pdoStatement;
+    protected \PDOStatement $pdoStatement;
 
     /**
      * PDOStatement constructor.
@@ -28,7 +26,7 @@ class PDOStatement implements Statement
     /**
      * @inheritdoc
      */
-    public function fetch(bool $assoc = false) : ?array
+    public function fetch(bool $assoc = false) : array|null
     {
         try {
             $result = @ $this->pdoStatement->fetch($assoc ? \PDO::FETCH_ASSOC : \PDO::FETCH_NUM);

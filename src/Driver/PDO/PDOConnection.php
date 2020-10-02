@@ -9,27 +9,27 @@ use Brick\Db\Driver\DriverException;
 use Brick\Db\Driver\PreparedStatement;
 use Brick\Db\Driver\Statement;
 use Brick\Db\Platform;
+use PDO;
+use PDOException;
 
 class PDOConnection implements Connection
 {
     /**
      * The PDO connection.
-     *
-     * @var \PDO
      */
-    private $pdo;
+    private PDO $pdo;
 
     /**
      * PDOConnection constructor.
      *
-     * @param \PDO $pdo
+     * @param PDO $pdo
      */
-    public function __construct(\PDO $pdo)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
-    public function detectPlatform() : ?Platform
+    public function detectPlatform() : Platform|null
     {
         $name = $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 
@@ -101,7 +101,7 @@ class PDOConnection implements Connection
     /**
      * @inheritdoc
      */
-    public function lastInsertId(?string $name = null) : int
+    public function lastInsertId(string|null $name = null) : int
     {
         $lastInsertId = @ $this->pdo->lastInsertId($name);
 
@@ -111,11 +111,11 @@ class PDOConnection implements Connection
     /**
      * Creates a DbException from the PDO last error info.
      *
-     * @param \PDO $pdo The PDO connection.
+     * @param PDO $pdo The PDO connection.
      *
      * @return DriverException
      */
-    public static function exceptionFromPDO(\PDO $pdo) : DriverException
+    public static function exceptionFromPDO(PDO $pdo) : DriverException
     {
         return self::exceptionFromErrorInfo($pdo->errorInfo());
     }
@@ -150,13 +150,13 @@ class PDOConnection implements Connection
      * Note: PDOException::$errorInfo can contain NULL, for example when committing a non-existing transaction on MySQL.
      * This is not documented on the php.net website.
      *
-     * @param array|null         $errorInfo    The errorInfo array from PDO, PDOStatement or PDOException,
-     *                                         or NULL if not available.
-     * @param \PDOException|null $pdoException The PDO exception, if any.
+     * @param array|null        $errorInfo    The errorInfo array from PDO, PDOStatement or PDOException,
+     *                                        or NULL if not available.
+     * @param PDOException|null $pdoException The PDO exception, if any.
      *
      * @return DriverException
      */
-    private static function exceptionFromErrorInfo(?array $errorInfo, ?\PDOException $pdoException = null) : DriverException
+    private static function exceptionFromErrorInfo(array|null $errorInfo, PDOException|null $pdoException = null) : DriverException
     {
         if ($errorInfo === null) {
             $errorInfo = ['00000', null, null];

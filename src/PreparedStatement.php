@@ -9,15 +9,9 @@ use Brick\Db\Internal\TimerLogger;
 
 class PreparedStatement extends Statement
 {
-    /**
-     * @var Driver\PreparedStatement
-     */
-    protected $driverPreparedStatement;
+    protected Driver\PreparedStatement $driverPreparedStatement;
 
-    /**
-     * @var TimerLogger
-     */
-    protected $logger;
+    protected TimerLogger $logger;
 
     /**
      * @param Driver\PreparedStatement $driverStatement

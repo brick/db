@@ -15,7 +15,7 @@ interface Statement
      *
      * @throws DriverException If an error occurs.
      */
-    public function fetch(bool $assoc = false) : ?array;
+    public function fetch(bool $assoc = false) : array|null;
 
     /**
      * Returns an array containing all of the remaining rows in the current result set.

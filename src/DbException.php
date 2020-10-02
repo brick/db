@@ -10,31 +10,23 @@ class DbException extends \Exception
 {
     /**
      * The SQL statement that generated an exception, if any.
-     *
-     * @var string|null
      */
-    private $sqlStatement;
+    private string|null $sqlStatement;
 
     /**
      * The parameters bound to the statement, if any.
-     *
-     * @var array|null
      */
-    private $parameters;
+    private array|null $parameters;
 
     /**
      * The five characters SQLSTATE error code, or null if not available.
-     *
-     * @var string|null
      */
-    private $sqlState;
+    private string|null $sqlState;
 
     /**
      * The driver-specific error code, or null if not available.
-     *
-     * @var string|int|null
      */
-    private $errorCode;
+    private string|int|null $errorCode;
 
     /**
      * @param DriverException $driverException
@@ -43,7 +35,7 @@ class DbException extends \Exception
      *
      * @return DbException
      */
-    public static function fromDriverException(DriverException $driverException, ?string $sqlStatement = null, ?array $parameters = null) : DbException
+    public static function fromDriverException(DriverException $driverException, string|null $sqlStatement = null, array|null $parameters = null) : DbException
     {
         $message = $driverException->getMessage();
 
@@ -122,7 +114,7 @@ class DbException extends \Exception
     /**
      * @return string|null
      */
-    public function getSQLStatement() : ?string
+    public function getSQLStatement() : string|null
     {
         return $this->sqlStatement;
     }
@@ -130,7 +122,7 @@ class DbException extends \Exception
     /**
      * @return array|null
      */
-    public function getParameters() : ?array
+    public function getParameters() : array|null
     {
         return $this->parameters;
     }
@@ -140,7 +132,7 @@ class DbException extends \Exception
      *
      * @return string|null
      */
-    public function getSQLState() : ?string
+    public function getSQLState() : string|null
     {
         return $this->sqlState;
     }
@@ -150,7 +142,7 @@ class DbException extends \Exception
      *
      * @return string|int|null
      */
-    public function getErrorCode()
+    public function getErrorCode() : string|int|null
     {
         return $this->errorCode;
     }
