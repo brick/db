@@ -122,7 +122,7 @@ abstract class BulkOperator
      *
      * @throws \InvalidArgumentException If the number of values does not match the field count.
      */
-    public function queue(...$values) : bool
+    public function queue(mixed ...$values) : bool
     {
         $count = count($values);
 

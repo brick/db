@@ -75,7 +75,7 @@ class DbException extends \Exception
      *
      * @return string
      */
-    private static function getParameterPreview($parameter) : string
+    private static function getParameterPreview(mixed $parameter) : string
     {
         if ($parameter === null) {
             return 'null';
