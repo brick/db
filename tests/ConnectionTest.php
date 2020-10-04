@@ -20,10 +20,10 @@ class ConnectionTest extends TestCase
         $connection->exec('CREATE TABLE test(id INT)');
         $connection->query('INSERT INTO test (id) VALUES(?)', [123]);
 
-        $value = $connection->query('SELECT * FROM test WHERE id = ?', [123])->fetch();
+        $value = $connection->query('SELECT * FROM test WHERE id = ?', [123])->fetchNumeric();
         $this->assertEquals([123], $value);
 
-        $value = $connection->query('SELECT * FROM test WHERE id = ?', [456])->fetch();
+        $value = $connection->query('SELECT * FROM test WHERE id = ?', [456])->fetchNumeric();
         $this->assertNull($value);
 
         $this->assertDebugStatement('CREATE TABLE test(id INT)', [], $logger->getDebugStatement(0));

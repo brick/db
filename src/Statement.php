@@ -27,43 +27,79 @@ class Statement
     }
 
     /**
-     * Fetches the next row in the current result set.
-     *
-     * @param bool $assoc True to return the result as an associative array, false for a numeric array (default).
-     *
-     * @return array|null A numeric or associative array of column values, or null if no more rows.
+     * @return array<int, mixed>|null A list of column values, or null if there are no more rows.
      *
      * @throws DbException If an error occurs.
      */
-    public function fetch(bool $assoc = false) : array|null
+    public function fetchNumeric() : array|null
     {
         try {
-            return $this->driverStatement->fetch($assoc);
+            return $this->driverStatement->fetch(false);
         } catch (Driver\DriverException $e) {
             throw $this->platform->convertException($e, $this->sqlStatement);
         }
     }
 
     /**
-     * Returns an array containing all of the remaining rows in the current result set.
-     *
-     * The resulting numeric array represents each row as an array of column values.
-     * Each row is either a numeric array, or an associative array with keys corresponding to each column name.
-     * An empty array is returned if there are zero results to fetch.
-     *
-     * @param bool $assoc True to return each row as an associative array, false for a numeric array (default).
-     *
-     * @return array A numeric array, where each element is a numeric or associative array of column values.
+     * @return array<string, mixed>|null A map of column name to value, or null if there are no more rows.
      *
      * @throws DbException If an error occurs.
      */
-    public function fetchAll(bool $assoc = false) : array
+    public function fetchAssociative() : array|null
     {
         try {
-            return $this->driverStatement->fetchAll($assoc);
+            return $this->driverStatement->fetch(true);
         } catch (Driver\DriverException $e) {
             throw $this->platform->convertException($e, $this->sqlStatement);
         }
+    }
+
+    /**
+     * @return mixed The first column value, null if there are no more rows.
+     *
+     * @throws DbException If an error occurs.
+     */
+    public function fetchColumn() : mixed
+    {
+        return $this->fetchNumeric()[0];
+    }
+
+    /**
+     * @return array<int, array<int, mixed>> A list whose each element is a list of column values.
+     *
+     * @throws DbException If an error occurs.
+     */
+    public function fetchAllNumeric() : array
+    {
+        try {
+            return $this->driverStatement->fetchAll(false);
+        } catch (Driver\DriverException $e) {
+            throw $this->platform->convertException($e, $this->sqlStatement);
+        }
+    }
+
+    /**
+     * @return array<int, array<string, mixed>> A list whose each element is a map of column name to value.
+     *
+     * @throws DbException If an error occurs.
+     */
+    public function fetchAllAssociative() : array
+    {
+        try {
+            return $this->driverStatement->fetchAll(true);
+        } catch (Driver\DriverException $e) {
+            throw $this->platform->convertException($e, $this->sqlStatement);
+        }
+    }
+
+    /**
+     * @return array<int, mixed> A list whose each element is the first column value.
+     *
+     * @throws DbException If an error occurs.
+     */
+    public function fetchAllColumn() : array
+    {
+        return array_map(static fn(array $row) : mixed => $row[0], $this->fetchAllNumeric());
     }
 
     /**
