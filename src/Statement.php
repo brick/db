@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Brick\Db;
 
 use Brick\Db\Driver;
+use Traversable;
 
 class Statement
 {
@@ -100,6 +101,42 @@ class Statement
     public function fetchAllColumn() : array
     {
         return array_map(static fn(array $row) : mixed => $row[0], $this->fetchAllNumeric());
+    }
+
+    /**
+     * @return Traversable<int, array<int, mixed>> A traversable list whose each element is a list of column values.
+     *
+     * @throws DbException If an error occurs.
+     */
+    public function iterateNumeric() : Traversable
+    {
+        while (($row = $this->fetchNumeric()) !== null) {
+            yield $row;
+        }
+    }
+
+    /**
+     * @return Traversable<int, array<int, mixed>> A traversable list whose each element is a map of column name to value.
+     *
+     * @throws DbException If an error occurs.
+     */
+    public function iterateAssociative() : Traversable
+    {
+        while (($row = $this->fetchNumeric()) !== null) {
+            yield $row;
+        }
+    }
+
+    /**
+     * @return Traversable<int, mixed> A traversable list whose each element is the first column value.
+     *
+     * @throws DbException If an error occurs.
+     */
+    public function iterateColumn() : Traversable
+    {
+        while (($row = $this->fetchNumeric()) !== null) {
+            yield $row[0];
+        }
     }
 
     /**
