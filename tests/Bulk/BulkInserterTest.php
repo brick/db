@@ -6,6 +6,7 @@ namespace Brick\Db\Tests\Bulk;
 
 use Brick\Db\Bulk\BulkInserter;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -13,33 +14,32 @@ use PHPUnit\Framework\TestCase;
  */
 class BulkInserterTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The number of operations per query must be 1 or more.
-     */
     public function testValidateConstructorBatchSize()
     {
         $pdo = new PDOMock();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The number of operations per query must be 1 or more.');
+
         new BulkInserter($pdo, 'table', ['id'], 0);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The field list is empty.
-     */
     public function testValidateConstructorFieldCount()
     {
         $pdo = new PDOMock();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The field list is empty.');
+
         new BulkInserter($pdo, 'table', []);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testValidateQueueFieldCount()
     {
         $pdo = new PDOMock();
         $inserter = new BulkInserter($pdo, 'table', ['id', 'name']);
+
+        $this->expectException(InvalidArgumentException::class);
         $inserter->queue(1);
     }
 
