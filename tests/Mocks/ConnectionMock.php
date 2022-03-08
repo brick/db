@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Brick\Db\Tests\Bulk;
+namespace Brick\Db\Tests\Mocks;
+
+use Brick\Db\Interfaces\Connection;
+use Brick\Db\Interfaces\Statement;
 
 /**
- * Mocks a PDO connection for unit testing.
+ * Mocks a Connection for unit testing.
  */
-class PDOMock extends \PDO
+final class ConnectionMock implements Connection
 {
     private int $statementNumber = 0;
 
@@ -24,27 +27,21 @@ class PDOMock extends \PDO
     private array $rowCounts;
 
     /**
-     * @param int[] $rowCounts The values that will be returned by successive calls to PDOStatementMock::rowCount().
-     *                         If no values are provided, PDOStatementMock::rowCount() will return 0.
+     * @param int[] $rowCounts The values that will be returned by each Result::rowCount().
+     *                         If no values are provided, Result::rowCount() will return 0.
      */
     public function __construct(array $rowCounts = [])
     {
         $this->rowCounts = $rowCounts;
     }
 
-    /**
-     * @param string     $statement
-     * @param array|null $options
-     *
-     * @return PDOStatementMock
-     */
-    public function prepare($statement, $options = null)
+    public function prepare(string $sql): Statement
     {
         $statementNumber = ++$this->statementNumber;
 
-        $this->log('PREPARE STATEMENT ' . $statementNumber . ': ' . $statement);
+        $this->log('PREPARE STATEMENT ' . $statementNumber . ': ' . $sql);
 
-        return new PDOStatementMock($this, $statementNumber);
+        return new StatementMock($this, $statementNumber);
     }
 
     public function log(string $info) : void
@@ -61,7 +58,7 @@ class PDOMock extends \PDO
     }
 
     /**
-     * Returns the value that will be returned by PDOStatementMock::rowCount().
+     * Returns the value that will be returned by the next Result::rowCount().
      */
     public function getRowCount() : int
     {

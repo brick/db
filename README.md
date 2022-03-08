@@ -59,7 +59,7 @@ To use it, create a `BulkInserter` instance with:
 #### Example
 
 ```php
-use Brick\Db\Bulk\BulkInserter;
+use Brick\Db\Interfaces\BulkInserter;
 
 $pdo = new PDO(...);
 $inserter = new BulkInserter($pdo, 'user', ['id', 'name', 'age'], 100);
@@ -106,7 +106,7 @@ For obvious performance reasons, the list of columns used to identify a record s
 With a single column primary key / unique index:
 
 ```php
-use Brick\Db\Bulk\BulkDeleter;
+use Brick\Db\Interfaces\BulkDeleter;
 
 $pdo = new PDO(...);
 $deleter = new BulkDeleter($pdo, 'user', ['id']);
@@ -121,7 +121,7 @@ $deleter->flush();
 With a composite key:
 
 ```php
-use Brick\Db\Bulk\BulkDeleter;
+use Brick\Db\Interfaces\BulkDeleter;
 
 $pdo = new PDO(...);
 $deleter = new BulkDeleter($pdo, 'user_product', ['user_id', 'product_id]);

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Brick\Db\Bulk;
 
-use PDO;
-use PDOStatement;
+use Brick\Db\Interfaces\Connection;
+use Brick\Db\Interfaces\Statement;
 
 /**
  * Base class for BulkInserter and BulkDeleter.
@@ -13,9 +13,9 @@ use PDOStatement;
 abstract class BulkOperator
 {
     /**
-     * The PDO connection.
+     * The database connection.
      */
-    private PDO $pdo;
+    private Connection $connection;
 
     /**
      * The name of the target database table.
@@ -42,7 +42,7 @@ abstract class BulkOperator
     /**
      * The prepared statement to process a full batch of records.
      */
-    private PDOStatement $preparedStatement;
+    private Statement $preparedStatement;
 
     /**
      * A buffer containing the pending values to process in the next batch.
@@ -67,14 +67,14 @@ abstract class BulkOperator
     private int $affectedRows = 0;
 
     /**
-     * @param PDO      $pdo                The PDO connection.
-     * @param string   $table              The name of the table.
-     * @param string[] $fields             The name of the relevant fields.
-     * @param int      $operationsPerQuery The number of operations to process in a single query.
+     * @param Connection $connection         The database connection.
+     * @param string     $table              The name of the table.
+     * @param string[]   $fields             The name of the relevant fields.
+     * @param int        $operationsPerQuery The number of operations to process in a single query.
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(PDO $pdo, string $table, array $fields, int $operationsPerQuery = 100)
+    public function __construct(Connection $connection, string $table, array $fields, int $operationsPerQuery = 100)
     {
         if ($operationsPerQuery < 1) {
             throw new \InvalidArgumentException('The number of operations per query must be 1 or more.');
@@ -86,15 +86,15 @@ abstract class BulkOperator
             throw new \InvalidArgumentException('The field list is empty.');
         }
 
-        $this->pdo       = $pdo;
-        $this->table     = $table;
-        $this->fields    = $fields;
-        $this->numFields = $numFields;
+        $this->connection = $connection;
+        $this->table      = $table;
+        $this->fields     = $fields;
+        $this->numFields  = $numFields;
 
         $this->operationsPerQuery = $operationsPerQuery;
 
         $query = $this->getQuery($operationsPerQuery);
-        $this->preparedStatement = $this->pdo->prepare($query);
+        $this->preparedStatement = $this->connection->prepare($query);
     }
 
     /**
@@ -130,8 +130,8 @@ abstract class BulkOperator
             return false;
         }
 
-        $this->preparedStatement->execute($this->buffer);
-        $this->affectedRows += $this->preparedStatement->rowCount();
+        $result = $this->preparedStatement->execute($this->buffer);
+        $this->affectedRows += $result->rowCount();
 
         $this->buffer = [];
         $this->bufferSize = 0;
@@ -155,9 +155,9 @@ abstract class BulkOperator
         }
 
         $query = $this->getQuery($this->bufferSize);
-        $statement = $this->pdo->prepare($query);
-        $statement->execute($this->buffer);
-        $this->affectedRows += $statement->rowCount();
+        $statement = $this->connection->prepare($query);
+        $result = $statement->execute($this->buffer);
+        $this->affectedRows += $result->rowCount();
 
         $this->buffer = [];
         $this->bufferSize = 0;

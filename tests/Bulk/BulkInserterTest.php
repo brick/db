@@ -6,6 +6,7 @@ namespace Brick\Db\Tests\Bulk;
 
 use Brick\Db\Bulk\BulkInserter;
 
+use Brick\Db\Tests\Mocks\ConnectionMock;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -16,28 +17,28 @@ class BulkInserterTest extends TestCase
 {
     public function testValidateConstructorBatchSize(): void
     {
-        $pdo = new PDOMock();
+        $connection = new ConnectionMock();
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The number of operations per query must be 1 or more.');
 
-        new BulkInserter($pdo, 'table', ['id'], 0);
+        new BulkInserter($connection, 'table', ['id'], 0);
     }
 
     public function testValidateConstructorFieldCount(): void
     {
-        $pdo = new PDOMock();
+        $connection = new ConnectionMock();
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The field list is empty.');
 
-        new BulkInserter($pdo, 'table', []);
+        new BulkInserter($connection, 'table', []);
     }
 
     public function testValidateQueueFieldCount(): void
     {
-        $pdo = new PDOMock();
-        $inserter = new BulkInserter($pdo, 'table', ['id', 'name']);
+        $connection = new ConnectionMock();
+        $inserter = new BulkInserter($connection, 'table', ['id', 'name']);
 
         $this->expectException(InvalidArgumentException::class);
         $inserter->queue(1);
@@ -45,9 +46,9 @@ class BulkInserterTest extends TestCase
 
     public function testBulkInsert(): void
     {
-        $pdo = new PDOMock([3, 3, 1]);
+        $connection = new ConnectionMock([3, 3, 1]);
 
-        $inserter = new BulkInserter($pdo, 'transaction', ['user', 'currency', 'amount'], 3);
+        $inserter = new BulkInserter($connection, 'transaction', ['user', 'currency', 'amount'], 3);
 
         $this->assertSame(0, $inserter->getPendingOperations());
         $this->assertSame(0, $inserter->getAffectedRows());
@@ -96,13 +97,13 @@ class BulkInserterTest extends TestCase
             "EXECUTE STATEMENT 2: (7, 'USD', '7.89')"
         ];
 
-        $this->assertSame($expectedLog, $pdo->getLog());
+        $this->assertSame($expectedLog, $connection->getLog());
     }
 
     public function testReset(): void
     {
-        $pdo = new PDOMock([2]);
-        $inserter = new BulkInserter($pdo, 'user', ['id', 'name'], 2);
+        $connection = new ConnectionMock([2]);
+        $inserter = new BulkInserter($connection, 'user', ['id', 'name'], 2);
 
         $inserter->queue(1, 'Bob');
         $inserter->queue(2, 'John');

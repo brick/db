@@ -6,6 +6,7 @@ namespace Brick\Db\Tests\Bulk;
 
 use Brick\Db\Bulk\BulkDeleter;
 
+use Brick\Db\Tests\Mocks\ConnectionMock;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,8 +16,8 @@ class BulkDeleterTest extends TestCase
 {
     public function testBulkDelete(): void
     {
-        $pdo = new PDOMock([3, 4, 2]);
-        $deleter = new BulkDeleter($pdo, 'transaction', ['store_id', 'transaction_number'], 3);
+        $connection = new ConnectionMock([3, 4, 2]);
+        $deleter = new BulkDeleter($connection, 'transaction', ['store_id', 'transaction_number'], 3);
 
         $deleter->queue(1, 1);
         $deleter->queue(1, 2);
@@ -46,6 +47,6 @@ class BulkDeleterTest extends TestCase
             "EXECUTE STATEMENT 2: (4, 1000)"
         ];
 
-        $this->assertSame($expectedLog, $pdo->getLog());
+        $this->assertSame($expectedLog, $connection->getLog());
     }
 }
