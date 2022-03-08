@@ -60,9 +60,10 @@ To use it, create a `BulkInserter` instance with:
 
 ```php
 use Brick\Db\Interfaces\BulkInserter;
+use Brick\Db\PDO\Connection;
 
-$pdo = new PDO(...);
-$inserter = new BulkInserter($pdo, 'user', ['id', 'name', 'age'], 100);
+$connection = new Connection(new PDO(...));
+$inserter = new BulkInserter($connection, 'user', ['id', 'name', 'age'], 100);
 
 $inserter->queue(1, 'Bob', 20);
 $inserter->queue(2, 'John', 22);
@@ -107,9 +108,10 @@ With a single column primary key / unique index:
 
 ```php
 use Brick\Db\Interfaces\BulkDeleter;
+use Brick\Db\PDO\Connection;
 
-$pdo = new PDO(...);
-$deleter = new BulkDeleter($pdo, 'user', ['id']);
+$connection = new Connection(new PDO(...));
+$deleter = new BulkDeleter($connection, 'user', ['id']);
 
 $deleter->queue(1);
 $deleter->queue(2);
@@ -122,9 +124,10 @@ With a composite key:
 
 ```php
 use Brick\Db\Interfaces\BulkDeleter;
+use Brick\Db\PDO\Connection;
 
-$pdo = new PDO(...);
-$deleter = new BulkDeleter($pdo, 'user_product', ['user_id', 'product_id]);
+$connection = new Connection(new PDO(...));
+$deleter = new BulkDeleter($connection, 'user_product', ['user_id', 'product_id]);
 
 $deleter->queue(1, 123);
 $deleter->queue(2, 456);
@@ -145,10 +148,15 @@ To get the maximum performance out of this library, you should:
 These two tips combined can get you **up to 50% more throughput** in terms of inserts per second. Sample code:
 
 ```php
+use Brick\Db\Interfaces\BulkInserter;
+use Brick\Db\PDO\Connection;
+
 $pdo = new PDO(...);
 $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
-$inserter = new BulkInserter($pdo, 'user', ['id', 'name', 'age']);
+$connection = new Connection($pdo);
+
+$inserter = new BulkInserter($connection, 'user', ['id', 'name', 'age']);
 $pdo->beginTransaction();
 
 $inserter->queue(...);
