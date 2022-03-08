@@ -8,6 +8,7 @@ A collection of helper tools for interacting with databases.
 [![Build Status](https://github.com/brick/db/workflows/CI/badge.svg)](https://github.com/brick/db/actions)
 [![Coverage Status](https://coveralls.io/repos/github/brick/db/badge.svg?branch=master)](https://coveralls.io/github/brick/db?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/brick/db/v/stable)](https://packagist.org/packages/brick/db)
+[![Total Downloads](https://poser.pugx.org/brick/db/downloads)](https://packagist.org/packages/brick/db)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 
 Installation
