@@ -9,9 +9,6 @@ namespace Brick\Db\Bulk;
  */
 class BulkInserter extends BulkOperator
 {
-    /**
-     * @inheritdoc
-     */
     protected function getQuery(int $numRecords) : string
     {
         $fields       = implode(', ', $this->fields);

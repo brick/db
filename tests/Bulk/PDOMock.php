@@ -9,25 +9,22 @@ namespace Brick\Db\Tests\Bulk;
  */
 class PDOMock extends \PDO
 {
-    /**
-     * @var int
-     */
-    private $statementNumber = 0;
+    private int $statementNumber = 0;
 
     /**
      * @var string[]
      */
-    private $log = [];
+    private array $log = [];
 
     /**
      * The values that will be returned by successive calls to DOStatementMock::rowCount().
      *
      * @var int[]
      */
-    private $rowCounts;
+    private array $rowCounts;
 
     /**
-     * @param array $rowCounts The values that will be returned by successive calls to PDOStatementMock::rowCount().
+     * @param int[] $rowCounts The values that will be returned by successive calls to PDOStatementMock::rowCount().
      *                         If no values are provided, PDOStatementMock::rowCount() will return 0.
      */
     public function __construct(array $rowCounts = [])
@@ -50,11 +47,6 @@ class PDOMock extends \PDO
         return new PDOStatementMock($this, $statementNumber);
     }
 
-    /**
-     * @param string $info
-     *
-     * @return void
-     */
     public function log(string $info) : void
     {
         $this->log[] = $info;
@@ -70,8 +62,6 @@ class PDOMock extends \PDO
 
     /**
      * Returns the value that will be returned by PDOStatementMock::rowCount().
-     *
-     * @return int
      */
     public function getRowCount() : int
     {

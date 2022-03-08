@@ -9,20 +9,10 @@ namespace Brick\Db\Tests\Bulk;
  */
 class PDOStatementMock extends \PDOStatement
 {
-    /**
-     * @var PDOMock
-     */
-    private $pdo;
+    private PDOMock $pdo;
 
-    /**
-     * @var int
-     */
-    private $number;
+    private int $number;
 
-    /**
-     * @param PDOMock $pdo
-     * @param int     $number
-     */
     public function __construct(PDOMock $pdo, int $number)
     {
         $this->pdo    = $pdo;
@@ -49,11 +39,6 @@ class PDOStatementMock extends \PDOStatement
         return $this->pdo->getRowCount();
     }
 
-    /**
-     * @param array $parameters
-     *
-     * @return string
-     */
     private function dump(array $parameters) : string
     {
         foreach ($parameters as & $parameter) {

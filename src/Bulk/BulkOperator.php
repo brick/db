@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Brick\Db\Bulk;
 
+use PDO;
+use PDOStatement;
+
 /**
  * Base class for BulkInserter and BulkDeleter.
  */
@@ -11,85 +14,67 @@ abstract class BulkOperator
 {
     /**
      * The PDO connection.
-     *
-     * @var \PDO
      */
-    private $pdo;
+    private PDO $pdo;
 
     /**
      * The name of the target database table.
-     *
-     * @var string
      */
-    protected $table;
+    protected string $table;
 
     /**
      * The name of the fields to process.
      *
      * @var string[]
      */
-    protected $fields;
+    protected array $fields;
 
     /**
      * The number of fields above. This is to avoid redundant count() calls.
-     *
-     * @var int
      */
-    protected $numFields;
+    protected int $numFields;
 
     /**
      * The number of records to process per query.
-     *
-     * @var int
      */
-    private $operationsPerQuery;
+    private int $operationsPerQuery;
 
     /**
      * The prepared statement to process a full batch of records.
-     *
-     * @var \PDOStatement
      */
-    private $preparedStatement;
+    private PDOStatement $preparedStatement;
 
     /**
      * A buffer containing the pending values to process in the next batch.
-     *
-     * @var array
      */
-    private $buffer = [];
+    private array $buffer = [];
 
     /**
      * The number of operations in the buffer.
-     *
-     * @var int
      */
-    private $bufferSize = 0;
+    private int $bufferSize = 0;
 
     /**
      * The total number of operations that have been queued.
      *
      * This includes both flushed and pending operations.
-     *
-     * @var int
      */
-    private $totalOperations = 0;
+    private int $totalOperations = 0;
 
     /**
      * The total number of rows affected by flushed operations.
-     *
-     * @var int
      */
-    private $affectedRows = 0;
+    private int $affectedRows = 0;
 
     /**
-     * @param \PDO     $pdo                The PDO connection.
+     * @param PDO      $pdo                The PDO connection.
      * @param string   $table              The name of the table.
      * @param string[] $fields             The name of the relevant fields.
      * @param int      $operationsPerQuery The number of operations to process in a single query.
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(\PDO $pdo, string $table, array $fields, int $operationsPerQuery = 100)
+    public function __construct(PDO $pdo, string $table, array $fields, int $operationsPerQuery = 100)
     {
         if ($operationsPerQuery < 1) {
             throw new \InvalidArgumentException('The number of operations per query must be 1 or more.');
@@ -162,8 +147,6 @@ abstract class BulkOperator
      *
      * Do *not* forget to call this method after all the operations have been queued,
      * or it could result in data loss.
-     *
-     * @return void
      */
     public function flush() : void
     {
@@ -184,8 +167,6 @@ abstract class BulkOperator
      * Resets the bulk operator.
      *
      * This removes any pending operations, and resets the affected row count.
-     *
-     * @return void
      */
     public function reset() : void
     {
@@ -199,8 +180,6 @@ abstract class BulkOperator
      * Returns the total number of operations that have been queued.
      *
      * This includes both flushed and pending operations.
-     *
-     * @return int
      */
     public function getTotalOperations() : int
     {
@@ -209,8 +188,6 @@ abstract class BulkOperator
 
     /**
      * Returns the number of operations that have been flushed to the database.
-     *
-     * @return int
      */
     public function getFlushedOperations() : int
     {
@@ -219,8 +196,6 @@ abstract class BulkOperator
 
     /**
      * Returns the number of pending operations in the buffer.
-     *
-     * @return int
      */
     public function getPendingOperations() : int
     {
@@ -231,18 +206,11 @@ abstract class BulkOperator
      * Returns the total number of rows affected by flushed operations.
      *
      * For BulkInserter, this will be equal to the number of operations flushed to the database.
-     *
-     * @return int
      */
     public function getAffectedRows() : int
     {
         return $this->affectedRows;
     }
 
-    /**
-     * @param int $numRecords
-     *
-     * @return string
-     */
     abstract protected function getQuery(int $numRecords) : string;
 }

@@ -23,7 +23,7 @@ composer require brick/db
 Requirements
 ------------
 
-This library requires PHP 7.1 or later.
+This library requires PHP 7.4 or later.
 
 Package overview
 ----------------

@@ -9,9 +9,6 @@ namespace Brick\Db\Bulk;
  */
 class BulkDeleter extends BulkOperator
 {
-    /**
-     * @inheritdoc
-     */
     protected function getQuery(int $numRecords) : string
     {
         $parts = [];
