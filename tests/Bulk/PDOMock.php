@@ -20,7 +20,7 @@ class PDOMock extends \PDO
     private $log = [];
 
     /**
-     * The values that will be returned by successive calls to DOStatementMock::rowCount().
+     * The values that will be returned by successive calls to PDOStatementMock::rowCount().
      *
      * @var int[]
      */
