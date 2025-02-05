@@ -23,9 +23,9 @@ composer require brick/db
 Requirements
 ------------
 
-This library requires PHP 7.4 or later. 
+This library requires PHP 8.1 or later. 
 
-For PHP 7.1, 7.2 & 7.3 compatibility, you can use version `0.1`. Note that [these PHP versions are EOL](http://php.net/supported-versions.php) and not supported anymore. If you're still using one of these PHP versions, you should consider upgrading as soon as possible.
+For PHP 7.4 and 8.0 compatibility, you can use version `0.2`. PHP 7.1, 7.2 & 7.3, you can use version `0.1`. Note that [these PHP versions are EOL](http://php.net/supported-versions.php) and not supported anymore. If you're still using one of these PHP versions, you should consider upgrading as soon as possible.
 
 Package overview
 ----------------
