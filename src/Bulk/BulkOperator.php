@@ -16,24 +16,20 @@ abstract class BulkOperator
 
     /**
      * The name of the target database table.
-     *
-     * @var string
      */
-    protected $table;
+    protected string $table;
 
     /**
      * The name of the fields to process.
      *
      * @var string[]
      */
-    protected $fields;
+    protected array $fields;
 
     /**
      * The number of fields above. This is to avoid redundant count() calls.
-     *
-     * @var int
      */
-    protected $numFields;
+    protected int $numFields;
 
     /**
      * The number of records to process per query.
@@ -42,10 +38,8 @@ abstract class BulkOperator
 
     /**
      * The prepared statement to process a full batch of records.
-     *
-     * @var \PDOStatement
      */
-    private $preparedStatement;
+    private \PDOStatement $preparedStatement;
 
     /**
      * A buffer containing the pending values to process in the next batch.
@@ -110,7 +104,7 @@ abstract class BulkOperator
      *
      * @throws \InvalidArgumentException If the number of values does not match the field count.
      */
-    public function queue(...$values) : bool
+    public function queue(mixed ...$values) : bool
     {
         $count = count($values);
 

@@ -13,32 +13,20 @@ class PDOStatementMock extends \PDOStatement
 
     private int $number;
 
-    /**
-     * @param PDOMock $pdo
-     * @param int     $number
-     */
     public function __construct(PDOMock $pdo, int $number)
     {
         $this->pdo    = $pdo;
         $this->number = $number;
     }
 
-    /**
-     * @param array|null $parameters
-     *
-     * @return bool
-     */
-    public function execute($parameters = null)
+    public function execute(?array $parameters = null) : bool
     {
         $this->pdo->log('EXECUTE STATEMENT ' . $this->number . ': (' . $this->dump($parameters) . ')');
 
         return true;
     }
 
-    /**
-     * @return int
-     */
-    public function rowCount()
+    public function rowCount() : int
     {
         return $this->pdo->getRowCount();
     }
