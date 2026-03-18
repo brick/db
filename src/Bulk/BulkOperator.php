@@ -43,6 +43,8 @@ abstract class BulkOperator
 
     /**
      * A buffer containing the pending values to process in the next batch.
+     *
+     * @var list<mixed>
      */
     private array $buffer = [];
 
